@@ -3,6 +3,7 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import (
+    Boolean,
     JSON,
     DateTime,
     Enum,
@@ -215,3 +216,55 @@ class ServiceRequest(Base):
 
     def __repr__(self) -> str:
         return f"<ServiceRequest {self.request_type} - {self.status}>"
+
+
+class UpsellOffer(Base):
+    __tablename__ = "upsell_offers"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, default=uuid.uuid4
+    )
+    hotel_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("hotels.id"), nullable=False
+    )
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    price: Mapped[float] = mapped_column(Float, nullable=False)
+    offer_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    hotel: Mapped["Hotel"] = relationship()
+    conversions: Mapped[list["UpsellConversion"]] = relationship(
+        back_populates="offer"
+    )
+
+    def __repr__(self) -> str:
+        return f"<UpsellOffer {self.name} - ${self.price}>"
+
+
+class UpsellConversion(Base):
+    __tablename__ = "upsell_conversions"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, default=uuid.uuid4
+    )
+    booking_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("bookings.id"), nullable=False
+    )
+    offer_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("upsell_offers.id"), nullable=False
+    )
+    status: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="offered"
+    )
+    offered_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    responded_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    offer: Mapped["UpsellOffer"] = relationship(back_populates="conversions")
+
+    def __repr__(self) -> str:
+        return f"<UpsellConversion {self.status}>"

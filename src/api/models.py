@@ -11,6 +11,8 @@ class MetricsResponse(BaseModel):
     auto_resolved_pct: float
     avg_response_time_ms: int
     top_intents: list[dict]
+    upsell_revenue: float = 0.0
+    upsell_conversion_rate: float = 0.0
 
 
 class ConversationListItem(BaseModel):

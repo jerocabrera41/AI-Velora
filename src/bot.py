@@ -26,7 +26,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     logger.info(f"/start from user {update.effective_user.id}")
     await update.message.reply_text(
         "Hola! Bienvenido/a a Hotel Palermo Soho.\n\n"
-        "Soy Sofia, tu asistente virtual. Puedo ayudarte con:\n"
+        "Soy Velora, tu asistente virtual. Puedo ayudarte con:\n"
         "- Informacion de tu reserva\n"
         "- Amenities del hotel (WiFi, desayuno, piscina...)\n"
         "- Pedidos de servicio (toallas, late checkout...)\n"
@@ -43,7 +43,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """Handle /help command."""
     logger.info(f"/help from user {update.effective_user.id}")
     await update.message.reply_text(
-        "Soy Sofia, el asistente virtual de Hotel Palermo Soho.\n\n"
+        "Soy Velora, el asistente virtual de Hotel Palermo Soho.\n\n"
         "Puedo ayudarte con:\n"
         "1. Informacion de reserva - check-in/out, confirmacion, habitacion\n"
         "2. Amenities - WiFi, desayuno, piscina, gym, parking\n"

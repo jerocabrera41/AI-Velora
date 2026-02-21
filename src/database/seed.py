@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from loguru import logger
 
-from src.database.models import Booking, BookingStatus, Hotel, RoomType
+from src.database.models import Booking, BookingStatus, Hotel, RoomType, UpsellOffer
 
 # Fixed UUIDs for reproducibility
 HOTEL_ID = uuid.UUID("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
@@ -17,6 +17,14 @@ BOOKING_3_ID = uuid.UUID("b1000003-0000-0000-0000-000000000003")
 ROOM_TYPE_STANDARD_ID = uuid.UUID("c1000001-0000-0000-0000-000000000001")
 ROOM_TYPE_DELUXE_ID = uuid.UUID("c1000002-0000-0000-0000-000000000002")
 ROOM_TYPE_SUITE_ID = uuid.UUID("c1000003-0000-0000-0000-000000000003")
+UPSELL_OFFER_IDS = [
+    uuid.UUID("d1000001-0000-0000-0000-000000000001"),
+    uuid.UUID("d1000002-0000-0000-0000-000000000002"),
+    uuid.UUID("d1000003-0000-0000-0000-000000000003"),
+    uuid.UUID("d1000004-0000-0000-0000-000000000004"),
+    uuid.UUID("d1000005-0000-0000-0000-000000000005"),
+    uuid.UUID("d1000006-0000-0000-0000-000000000006"),
+]
 
 
 def get_hotel_data() -> dict:
@@ -206,6 +214,83 @@ def get_bookings_data() -> list[dict]:
     ]
 
 
+def get_upsell_offers_data() -> list[dict]:
+    return [
+        {
+            "id": UPSELL_OFFER_IDS[0],
+            "hotel_id": HOTEL_ID,
+            "name": "Upgrade a Deluxe",
+            "description": (
+                "Mejora tu habitacion a Deluxe con cama king, "
+                "sala de estar, minibar y vista a la ciudad."
+            ),
+            "price": 80.0,
+            "offer_type": "upgrade",
+            "is_active": True,
+        },
+        {
+            "id": UPSELL_OFFER_IDS[1],
+            "hotel_id": HOTEL_ID,
+            "name": "Upgrade a Suite",
+            "description": (
+                "Mejora tu habitacion a Suite premium con jacuzzi privado, "
+                "terraza y servicio VIP."
+            ),
+            "price": 150.0,
+            "offer_type": "upgrade",
+            "is_active": True,
+        },
+        {
+            "id": UPSELL_OFFER_IDS[2],
+            "hotel_id": HOTEL_ID,
+            "name": "Paquete Desayuno Premium",
+            "description": (
+                "Desayuno premium con opciones gourmet, jugos naturales "
+                "y servicio de barista en mesa."
+            ),
+            "price": 18.0,
+            "offer_type": "breakfast",
+            "is_active": True,
+        },
+        {
+            "id": UPSELL_OFFER_IDS[3],
+            "hotel_id": HOTEL_ID,
+            "name": "Late Checkout",
+            "description": (
+                "Extiende tu estadía hasta las 14:00hs "
+                "(sujeto a disponibilidad)."
+            ),
+            "price": 30.0,
+            "offer_type": "late_checkout",
+            "is_active": True,
+        },
+        {
+            "id": UPSELL_OFFER_IDS[4],
+            "hotel_id": HOTEL_ID,
+            "name": "Tratamiento Spa Relax",
+            "description": (
+                "Masaje relajante de 60 minutos en nuestro spa "
+                "con aromaterapia incluida."
+            ),
+            "price": 50.0,
+            "offer_type": "spa",
+            "is_active": True,
+        },
+        {
+            "id": UPSELL_OFFER_IDS[5],
+            "hotel_id": HOTEL_ID,
+            "name": "Early Check-in",
+            "description": (
+                "Ingreso anticipado a partir de las 12:00hs "
+                "(sujeto a disponibilidad)."
+            ),
+            "price": 20.0,
+            "offer_type": "early_checkin",
+            "is_active": True,
+        },
+    ]
+
+
 async def seed_database(session: AsyncSession) -> None:
     """Populate the database with sample data if empty."""
 
@@ -226,9 +311,12 @@ async def seed_database(session: AsyncSession) -> None:
         booking = Booking(**booking_data)
         session.add(booking)
 
+    for offer_data in get_upsell_offers_data():
+        session.add(UpsellOffer(**offer_data))
+
     await session.commit()
     logger.info(
         "Seeded: 1 hotel (Hotel Palermo Soho) + 3 room types "
         "(Standard, Deluxe, Suite) + 3 bookings "
-        "(Juan Perez, Maria Gonzalez, Carlos Rodriguez)"
+        "(Juan Perez, Maria Gonzalez, Carlos Rodriguez) + 6 upsell offers"
     )

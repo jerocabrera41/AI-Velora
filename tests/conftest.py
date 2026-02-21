@@ -4,8 +4,8 @@ import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from src.database.database import Base
-from src.database.seed import get_bookings_data, get_hotel_data, get_room_types_data
-from src.database.models import Booking, Hotel, RoomType
+from src.database.seed import get_bookings_data, get_hotel_data, get_room_types_data, get_upsell_offers_data
+from src.database.models import Booking, Hotel, RoomType, UpsellOffer
 
 
 @pytest_asyncio.fixture
@@ -26,6 +26,8 @@ async def db_session():
             session.add(RoomType(**room_type_data))
         for booking_data in get_bookings_data():
             session.add(Booking(**booking_data))
+        for offer_data in get_upsell_offers_data():
+            session.add(UpsellOffer(**offer_data))
         await session.commit()
 
         yield session

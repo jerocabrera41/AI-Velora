@@ -74,6 +74,7 @@ class HotelAgent:
         graph.add_node("handle_amenities", self._handle_amenities)
         graph.add_node("handle_service_request", self._handle_service_request)
         graph.add_node("handle_faq", self._handle_faq)
+        graph.add_node("handle_upselling", self._handle_upselling)
         graph.add_node("handle_out_of_scope", self._handle_out_of_scope)
         graph.add_node("generate_response", self._generate_response)
 
@@ -94,6 +95,7 @@ class HotelAgent:
                 "amenities_query": "handle_amenities",
                 "service_request": "handle_service_request",
                 "faq_general": "handle_faq",
+                "upselling": "handle_upselling",
                 "out_of_scope": "handle_out_of_scope",
             },
         )
@@ -105,6 +107,7 @@ class HotelAgent:
         graph.add_edge("handle_amenities", "generate_response")
         graph.add_edge("handle_service_request", "generate_response")
         graph.add_edge("handle_faq", "generate_response")
+        graph.add_edge("handle_upselling", "generate_response")
         graph.add_edge("handle_out_of_scope", "generate_response")
 
         # End
@@ -174,12 +177,12 @@ class HotelAgent:
         if guest_name:
             greeting = (
                 f"Hola {guest_name}! Bienvenido/a a Hotel Palermo Soho. "
-                "Soy Sofia, tu asistente virtual. En que puedo ayudarte?"
+                "Soy Velora, tu asistente virtual. En que puedo ayudarte?"
             )
         else:
             greeting = (
                 "Hola! Bienvenido/a a Hotel Palermo Soho. "
-                "Soy Sofia, tu asistente virtual. "
+                "Soy Velora, tu asistente virtual. "
                 "Si tenes una reserva, compartime tu numero de confirmacion "
                 "y te doy toda la info que necesites."
             )
@@ -209,6 +212,11 @@ class HotelAgent:
         """Handle FAQ queries using the LLM with tools."""
         logger.info("Handling faq_general intent")
         return await self._llm_with_tools(state, "faq_general")
+
+    async def _handle_upselling(self, state: AgentState) -> dict:
+        """Handle upselling queries using the LLM with tools."""
+        logger.info("Handling upselling intent")
+        return await self._llm_with_tools(state, "upselling")
 
     async def _handle_out_of_scope(self, state: AgentState) -> dict:
         """Handle out-of-scope queries with escalation."""
@@ -337,6 +345,7 @@ class HotelAgent:
                 "amenities_query": "Disculpa, no pude obtener la informacion en este momento. Podes consultar en recepcion o llamar al +54 11 4833-1234.",
                 "service_request": "Disculpa, no pude procesar tu pedido automaticamente. Por favor comunicate con recepcion al +54 11 4833-1234.",
                 "faq_general": "Disculpa, no puedo responder tu consulta en este momento. Te recomiendo contactar a recepcion al +54 11 4833-1234.",
+                "upselling": "Disculpa, no pude obtener las ofertas en este momento. Consulta en recepcion por nuestros upgrades y promociones.",
                 "out_of_scope": "Esa consulta excede lo que puedo resolver. Te comunico con nuestro equipo de recepcion para que puedan ayudarte.",
             }
             return {
@@ -387,6 +396,14 @@ class HotelAgent:
                 tool_input["booking_id"],
                 tool_input["request_type"],
                 tool_input["details"],
+            ),
+            "get_upsell_offers": lambda: self.tools.get_upsell_offers(
+                tool_input.get("booking_id"),
+            ),
+            "respond_to_upsell": lambda: self.tools.respond_to_upsell(
+                tool_input["booking_id"],
+                tool_input["offer_id"],
+                tool_input["accepted"],
             ),
             "escalate_to_human": lambda: self.tools.escalate_to_human(
                 tool_input.get("conversation_id", state["conversation_id"]),

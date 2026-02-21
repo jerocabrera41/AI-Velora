@@ -12,6 +12,8 @@ from src.database.models import (
     Message,
     MessageRole,
     ResolutionType,
+    UpsellConversion,
+    UpsellOffer,
 )
 
 
@@ -29,6 +31,7 @@ class AnalyticsService:
         auto_resolved = await self._auto_resolved_today()
         avg_response = await self._avg_response_time_ms()
         top_intents = await self._top_intents(limit=5)
+        upsell = await self._upsell_metrics()
 
         auto_pct = (auto_resolved / total * 100) if total > 0 else 0.0
 
@@ -38,6 +41,8 @@ class AnalyticsService:
             "auto_resolved_pct": round(auto_pct, 1),
             "avg_response_time_ms": avg_response,
             "top_intents": top_intents,
+            "upsell_revenue": upsell["revenue"],
+            "upsell_conversion_rate": upsell["conversion_rate"],
         }
 
     async def _total_conversations_today(self) -> int:
@@ -97,6 +102,37 @@ class AnalyticsService:
         )
         rows = result.all()
         return [{"intent": row[0], "count": row[1]} for row in rows]
+
+    async def _upsell_metrics(self) -> dict:
+        """Compute upsell revenue and conversion rate."""
+        # Total offers made
+        total_result = await self.session.execute(
+            select(func.count(UpsellConversion.id))
+        )
+        total_offers = total_result.scalar_one()
+
+        # Accepted offers
+        accepted_result = await self.session.execute(
+            select(func.count(UpsellConversion.id)).where(
+                UpsellConversion.status == "accepted"
+            )
+        )
+        accepted = accepted_result.scalar_one()
+
+        # Revenue from accepted offers (join with UpsellOffer for price)
+        revenue_result = await self.session.execute(
+            select(func.coalesce(func.sum(UpsellOffer.price), 0.0))
+            .join(UpsellConversion, UpsellConversion.offer_id == UpsellOffer.id)
+            .where(UpsellConversion.status == "accepted")
+        )
+        revenue = float(revenue_result.scalar_one())
+
+        conversion_rate = (accepted / total_offers * 100) if total_offers > 0 else 0.0
+
+        return {
+            "revenue": round(revenue, 2),
+            "conversion_rate": round(conversion_rate, 1),
+        }
 
     async def get_conversations_list(
         self, limit: int = 50, offset: int = 0

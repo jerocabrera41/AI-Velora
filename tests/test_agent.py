@@ -63,7 +63,7 @@ async def test_greeting_response(services, conversation):
 
     assert result["response"] != ""
     assert result["intent"] == "greeting"
-    assert "Palermo Soho" in result["response"] or "Sofia" in result["response"]
+    assert "Palermo Soho" in result["response"] or "Velora" in result["response"]
 
 
 @pytest.mark.asyncio

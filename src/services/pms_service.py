@@ -10,7 +10,15 @@ from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from src.database.models import Booking, BookingStatus, Hotel, RoomType, ServiceRequest
+from src.database.models import (
+    Booking,
+    BookingStatus,
+    Hotel,
+    RoomType,
+    ServiceRequest,
+    UpsellConversion,
+    UpsellOffer,
+)
 
 
 class PMSService:
@@ -292,6 +300,99 @@ class PMSService:
             "booking": self._booking_to_dict(booking),
             "total_price": room_available["total_price"],
             "nights": room_available["nights"],
+        }
+
+    async def get_upsell_offers(self, hotel_id: uuid.UUID) -> list[dict]:
+        """Get all active upsell offers for a hotel."""
+        logger.info(f"PMS lookup: upsell_offers for hotel_id={hotel_id}")
+
+        result = await self.session.execute(
+            select(UpsellOffer).where(
+                and_(
+                    UpsellOffer.hotel_id == hotel_id,
+                    UpsellOffer.is_active == True,
+                )
+            )
+        )
+        offers = result.scalars().all()
+
+        return [
+            {
+                "id": str(o.id),
+                "name": o.name,
+                "description": o.description,
+                "price": o.price,
+                "offer_type": o.offer_type,
+            }
+            for o in offers
+        ]
+
+    async def get_applicable_offers(
+        self, hotel_id: uuid.UUID, booking_id: uuid.UUID
+    ) -> list[dict]:
+        """Get upsell offers applicable to a specific booking.
+
+        Filters out upgrades that don't apply (e.g., no upgrade offer
+        if guest already has a Suite).
+        """
+        logger.info(
+            f"PMS lookup: applicable offers for booking={booking_id}"
+        )
+
+        # Get the booking to know the room type
+        result = await self.session.execute(
+            select(Booking).where(Booking.id == booking_id)
+        )
+        booking = result.scalar_one_or_none()
+        if booking is None:
+            return []
+
+        all_offers = await self.get_upsell_offers(hotel_id)
+
+        applicable = []
+        for offer in all_offers:
+            # Skip upgrade to Deluxe if guest already has Deluxe or Suite
+            if offer["offer_type"] == "upgrade" and "Deluxe" in offer["name"]:
+                if booking.room_type in ("Deluxe", "Suite"):
+                    continue
+            # Skip upgrade to Suite if guest already has Suite
+            if offer["offer_type"] == "upgrade" and "Suite" in offer["name"]:
+                if booking.room_type == "Suite":
+                    continue
+            applicable.append(offer)
+
+        logger.info(f"Applicable offers: {len(applicable)} for {booking.room_type}")
+        return applicable
+
+    async def record_upsell_response(
+        self,
+        booking_id: uuid.UUID,
+        offer_id: uuid.UUID,
+        accepted: bool,
+    ) -> dict:
+        """Record a guest's response to an upsell offer."""
+        logger.info(
+            f"Recording upsell response: booking={booking_id}, "
+            f"offer={offer_id}, accepted={accepted}"
+        )
+
+        status = "accepted" if accepted else "declined"
+        conversion = UpsellConversion(
+            booking_id=booking_id,
+            offer_id=offer_id,
+            status=status,
+            responded_at=datetime.utcnow(),
+        )
+        self.session.add(conversion)
+        await self.session.commit()
+        await self.session.refresh(conversion)
+
+        return {
+            "id": str(conversion.id),
+            "booking_id": str(conversion.booking_id),
+            "offer_id": str(conversion.offer_id),
+            "status": conversion.status,
+            "responded_at": conversion.responded_at.isoformat(),
         }
 
     async def get_default_hotel(self) -> dict | None:

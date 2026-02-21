@@ -218,6 +218,58 @@ class AgentTools:
         )
         return result
 
+    async def get_upsell_offers(self, booking_id: str | None = None) -> dict[str, Any]:
+        """Get available upsell offers for the current guest.
+
+        Args:
+            booking_id: UUID of the guest's booking (optional, filters applicable offers).
+
+        Returns:
+            List of available upsell offers.
+        """
+        logger.info(f"Tool call: get_upsell_offers(booking_id={booking_id})")
+        if booking_id:
+            try:
+                offers = await self.pms.get_applicable_offers(
+                    self.hotel_id, uuid.UUID(booking_id)
+                )
+            except Exception as e:
+                logger.error(f"Failed to get applicable offers: {e}")
+                offers = await self.pms.get_upsell_offers(self.hotel_id)
+        else:
+            offers = await self.pms.get_upsell_offers(self.hotel_id)
+
+        if not offers:
+            return {"available": False, "message": "No hay ofertas disponibles en este momento."}
+        return {"available": True, "offers": offers}
+
+    async def respond_to_upsell(
+        self, booking_id: str, offer_id: str, accepted: bool
+    ) -> dict[str, Any]:
+        """Record the guest's response to an upsell offer.
+
+        Args:
+            booking_id: UUID of the guest's booking.
+            offer_id: UUID of the upsell offer.
+            accepted: Whether the guest accepted the offer.
+
+        Returns:
+            Confirmation of the recorded response.
+        """
+        logger.info(
+            f"Tool call: respond_to_upsell({booking_id}, {offer_id}, {accepted})"
+        )
+        try:
+            result = await self.pms.record_upsell_response(
+                booking_id=uuid.UUID(booking_id),
+                offer_id=uuid.UUID(offer_id),
+                accepted=accepted,
+            )
+            return {"success": True, "conversion": result}
+        except Exception as e:
+            logger.error(f"Failed to record upsell response: {e}")
+            return {"success": False, "error": str(e)}
+
     async def escalate_to_human(
         self, conversation_id: str, reason: str
     ) -> dict[str, Any]:
@@ -431,6 +483,48 @@ TOOL_DEFINITIONS = [
                 "guest_name", "guest_phone", "checkin_date",
                 "checkout_date", "room_type", "num_guests",
             ],
+        },
+    },
+    {
+        "name": "get_upsell_offers",
+        "description": (
+            "Obtiene las ofertas de upselling disponibles para el huesped. "
+            "Usalo cuando el huesped pregunte por upgrades, ofertas, promociones, "
+            "o despues de confirmar una nueva reserva para sugerir mejoras."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "booking_id": {
+                    "type": "string",
+                    "description": "UUID de la reserva del huesped (opcional, para filtrar ofertas aplicables)",
+                },
+            },
+        },
+    },
+    {
+        "name": "respond_to_upsell",
+        "description": (
+            "Registra la respuesta del huesped a una oferta de upselling. "
+            "Usalo cuando el huesped acepte o rechace una oferta."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "booking_id": {
+                    "type": "string",
+                    "description": "UUID de la reserva del huesped",
+                },
+                "offer_id": {
+                    "type": "string",
+                    "description": "UUID de la oferta de upselling",
+                },
+                "accepted": {
+                    "type": "boolean",
+                    "description": "true si el huesped acepto, false si rechazo",
+                },
+            },
+            "required": ["booking_id", "offer_id", "accepted"],
         },
     },
     {

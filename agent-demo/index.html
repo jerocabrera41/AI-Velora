@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hotel Miramar — AI Agents</title>
+  <title>Hotel Palermo Soho — AI Agents</title>
   <style>
     :root {
       --navy:    #4401ff;
@@ -411,8 +411,8 @@
 <!-- PAGE HEADER -->
 <header class="page-header">
   <div class="eyebrow">AI-Powered Guest Experience</div>
-  <h1>Hotel Miramar — AI Agents</h1>
-  <p>Three intelligent agents handling bookings, reception & upselling 24/7</p>
+  <h1>Hotel Palermo Soho — AI Agents</h1>
+  <p>Tres agentes inteligentes gestionando reservas, concierge y upselling 24/7</p>
 </header>
 
 <div class="demo-layout">
@@ -420,31 +420,31 @@
   <!-- LEFT: ROI Calculator -->
   <aside class="side-panel">
     <div class="panel-card">
-      <div class="panel-title">ROI Calculator</div>
-      <div class="panel-sub">Adjust for your property</div>
+      <div class="panel-title">Calculadora de ROI</div>
+      <div class="panel-sub">Ajustá para tu propiedad</div>
 
       <div class="slider-row">
-        <span>Hotel size</span>
-        <span id="roomsValue">50 rooms</span>
+        <span>Tamaño del hotel</span>
+        <span id="roomsValue">50 habitaciones</span>
       </div>
       <input type="range" class="roi-slider" id="roomsSlider" min="10" max="200" value="50" oninput="updateROI()" />
 
       <div class="roi-num">
-        <div class="roi-lbl">Staff hours saved / week</div>
+        <div class="roi-lbl">Horas de staff ahorradas / semana</div>
         <div class="roi-val" id="hoursValue">28<span class="roi-unit"> hrs</span></div>
       </div>
       <div class="roi-num">
-        <div class="roi-lbl">Extra upsell revenue / month</div>
+        <div class="roi-lbl">Revenue extra de upselling / mes</div>
         <div class="roi-val" id="revenueValue">$5,500</div>
       </div>
       <div class="roi-num">
-        <div class="roi-lbl">Queries handled automatically</div>
+        <div class="roi-lbl">Consultas resueltas automáticamente</div>
         <div class="roi-val">82<span class="roi-unit">%</span></div>
       </div>
       <div class="roi-div"></div>
       <div class="roi-box">
-        <div class="rv" id="totalValue">$5,500/mo</div>
-        <div class="rl">additional revenue at your property</div>
+        <div class="rv" id="totalValue">$5,500/mes</div>
+        <div class="rl">revenue adicional en tu propiedad</div>
       </div>
     </div>
   </aside>
@@ -463,8 +463,8 @@
       <div class="wa-back">‹</div>
       <div class="wa-av" id="agIcon">🏨</div>
       <div class="wa-info">
-        <div class="wa-name" id="agName">Miramar Reservations</div>
-        <div class="wa-sub"  id="agSub">online</div>
+        <div class="wa-name" id="agName">Velora — Reservas</div>
+        <div class="wa-sub"  id="agSub">en línea</div>
       </div>
       <div class="wa-actions">
         <span title="Video call">📹</span>
@@ -475,9 +475,9 @@
 
     <!-- Tabs -->
     <div class="wa-tabs">
-      <div class="tab-btn active" onclick="switchTab('reservations')">🏨 Booking</div>
+      <div class="tab-btn active" onclick="switchTab('reservations')">🏨 Reservas</div>
       <div class="tab-btn"       onclick="switchTab('reception')">🛎 Concierge</div>
-      <div class="tab-btn"       onclick="switchTab('upselling')">⭐ Offers</div>
+      <div class="tab-btn"       onclick="switchTab('upselling')">⭐ Ofertas</div>
     </div>
 
     <!-- Chat -->
@@ -499,47 +499,47 @@
   <!-- RIGHT: Features -->
   <aside class="side-panel">
     <div class="panel-card">
-      <div class="panel-title">Why Hotels Love This</div>
-      <div class="panel-sub">Real results, day one</div>
+      <div class="panel-title">Por qué los hoteles eligen Velora</div>
+      <div class="panel-sub">Resultados reales, desde el día uno</div>
 
       <div class="feat-item">
         <div class="feat-icon">🕐</div>
         <div class="feat-text">
-          <h4>24/7 Availability</h4>
-          <p>Answer guests at 3 AM without extra staff. Never miss a booking.</p>
+          <h4>Disponible 24/7</h4>
+          <p>Respondé a huéspedes a las 3 AM sin personal extra. Sin perder reservas.</p>
         </div>
       </div>
       <div class="feat-item">
         <div class="feat-icon">💬</div>
         <div class="feat-text">
-          <h4>Native WhatsApp</h4>
-          <p>Works where guests already are. Zero app downloads required.</p>
+          <h4>WhatsApp Nativo</h4>
+          <p>Funciona donde ya están tus huéspedes. Sin descargar nada.</p>
         </div>
       </div>
       <div class="feat-item">
         <div class="feat-icon">💰</div>
         <div class="feat-text">
-          <h4>Automatic Upselling</h4>
-          <p>Offers sent at the perfect moment — post-booking, pre-arrival, day 1.</p>
+          <h4>Upselling Automático</h4>
+          <p>Ofertas en el momento perfecto — post-reserva, pre-llegada, día 1.</p>
         </div>
       </div>
       <div class="feat-item">
         <div class="feat-icon">📊</div>
         <div class="feat-text">
-          <h4>Real-time Dashboard</h4>
-          <p>Track every conversation, revenue earned, and guest satisfaction.</p>
+          <h4>Dashboard en Tiempo Real</h4>
+          <p>Seguí cada conversación, revenue generado y satisfacción.</p>
         </div>
       </div>
       <div class="feat-item">
         <div class="feat-icon">🔗</div>
         <div class="feat-text">
-          <h4>PMS Integration</h4>
-          <p>Connects to Opera, Cloudbeds, and 40+ systems in 48 hours.</p>
+          <h4>Integración con PMS</h4>
+          <p>Se conecta a Opera, Cloudbeds y +40 sistemas en 48 horas.</p>
         </div>
       </div>
 
       <div class="roi-div"></div>
-      <button class="cta-btn" onclick="alert('¡Gracias por el interés! Te contactamos pronto.')">Book a Live Demo →</button>
+      <button class="cta-btn" onclick="alert('¡Gracias por el interés! Te contactamos pronto.')">Agendar Demo en Vivo →</button>
     </div>
   </aside>
 
@@ -595,7 +595,7 @@ function addMessage(role, html, time) {
 function showTyping() {
   if (isTyping) return;
   isTyping = true;
-  setSubtitle('typing…');
+  setSubtitle('escribiendo…');
   const ca = document.getElementById('chatArea');
   const row = document.createElement('div');
   row.id = 'typingRow'; row.className = 'typing-row';
@@ -604,7 +604,7 @@ function showTyping() {
 }
 function hideTyping() {
   isTyping = false;
-  setSubtitle('online');
+  setSubtitle('en línea');
   const el = document.getElementById('typingRow');
   if (el) el.remove();
 }
@@ -672,9 +672,9 @@ function switchTab(newTab) {
     btn.classList.toggle('active', ['reservations','reception','upselling'][i] === newTab);
   });
   const agents = {
-    reservations: ['🏨', 'Miramar Reservations',  'online'],
-    reception:    ['🛎️', 'Miramar Concierge',      'online'],
-    upselling:    ['⭐', 'Miramar Offers',          'online'],
+    reservations: ['🏨', 'Velora — Reservas',     'en línea'],
+    reception:    ['🛎️', 'Velora — Concierge',     'en línea'],
+    upselling:    ['⭐', 'Velora — Ofertas',        'en línea'],
   };
   const [icon, name, sub] = agents[newTab];
   document.getElementById('agIcon').textContent = icon;
@@ -786,17 +786,17 @@ function parseDates(text) {
 // Parse which room type the user wants
 function parseRoomChoice(text) {
   const t = text.toLowerCase();
-  if (t.match(/standard|est[aá]ndar|basic|garden|cheap|m[aá]s barato|89|first|primero/))  return 'standard';
-  if (t.match(/superior|ocean|second|segundo|129/))                                          return 'superior';
-  if (t.match(/suite|junior|luxury|jacuzzi|butler|best|mejor|panoram|189|third|tercero/))  return 'suite';
+  if (t.match(/standard|est[aá]ndar|basic|cheap|m[aá]s barato|120|first|primero/))       return 'standard';
+  if (t.match(/deluxe|superior|king|minibar|vista ciudad|second|segundo|200/))             return 'deluxe';
+  if (t.match(/suite|luxury|jacuzzi|terraza|best|mejor|vip|350|third|tercero/))            return 'suite';
   return null;
 }
 
 // Room catalogue
 const ROOMS = [
-  { key:'standard', icon:'🛏', name:'Standard Room',  price:89,  view:'Garden View',   tags:['🌿 Garden View','🚿 Shower','📶 WiFi'],        avail:4 },
-  { key:'superior', icon:'✨', name:'Superior Room',  price:129, view:'Ocean View',    tags:['🌊 Ocean View','🛁 Bathtub','🍷 Minibar'],      avail:2 },
-  { key:'suite',    icon:'👑', name:'Junior Suite',   price:189, view:'Panoramic View',tags:['🌅 Panoramic','🛁 Jacuzzi','🛎 Butler service'], avail:1 },
+  { key:'standard', icon:'🛏', name:'Standard',  price:120,  view:'Cama doble',     tags:['🛏 Cama doble','🚿 Baño privado','📺 TV','📶 WiFi'],   avail:4 },
+  { key:'deluxe',   icon:'✨', name:'Deluxe',    price:200,  view:'Vista ciudad',   tags:['👑 King','🍷 Minibar','🌆 Vista ciudad'],               avail:2 },
+  { key:'suite',    icon:'👑', name:'Suite',      price:350,  view:'Terraza privada',tags:['🛁 Jacuzzi','🌅 Terraza','⭐ VIP'],                    avail:1 },
 ];
 
 function initReservations() {
@@ -805,12 +805,12 @@ function initReservations() {
   addDateChip('Today · Sat, 21 Feb 2026');
   setTimeout(() => {
     addMessage('agent',
-      `Hello! Welcome to <strong>Hotel Miramar</strong> 🏨<br>I'm Maya, your booking assistant.<br><br>Tell me — <strong>when</strong> would you like to stay and <strong>how many guests</strong>?`,
+      `Hola! Bienvenido/a a <strong>Hotel Palermo Soho</strong> 🏨<br>Soy Velora, tu asistente de reservas.<br><br>Contame — <strong>cuándo</strong> querés hospedarte y <strong>cuántos huéspedes</strong> serían?`,
       '9:41');
     setSuggestions([
-      '2 people, this Friday',
-      '3 guests next weekend',
-      'Just me, tomorrow night',
+      '2 personas, este viernes',
+      '3 huéspedes próximo finde',
+      'Solo yo, mañana',
     ]);
   }, 350);
 }
@@ -828,21 +828,21 @@ function advanceReservations(text) {
       showTyping();
       return setTimeout(() => {
         hideTyping();
-        addMessage('agent', `Of course! Here are our room types and prices at <strong>Hotel Miramar</strong>:<div class="room-opts">
+        addMessage('agent', `Por supuesto! Estos son nuestros tipos de habitación en <strong>Hotel Palermo Soho</strong>:<div class="room-opts">
           <div class="room-opt">
-            <div class="room-opt-h"><span class="rn">🛏 Standard Room</span><span class="rp">$89/night</span></div>
-            <div class="room-opt-b"><span class="rtag">🌿 Garden View</span><span class="rtag">🚿 Shower</span><span class="rtag">📶 WiFi</span></div>
+            <div class="room-opt-h"><span class="rn">🛏 Standard</span><span class="rp">$120/noche</span></div>
+            <div class="room-opt-b"><span class="rtag">🛏 Cama doble</span><span class="rtag">🚿 Baño privado</span><span class="rtag">📺 TV</span></div>
           </div>
           <div class="room-opt">
-            <div class="room-opt-h"><span class="rn">✨ Superior Room</span><span class="rp">$129/night</span></div>
-            <div class="room-opt-b"><span class="rtag">🌊 Ocean View</span><span class="rtag">🛁 Bathtub</span><span class="rtag">🍷 Minibar</span></div>
+            <div class="room-opt-h"><span class="rn">✨ Deluxe</span><span class="rp">$200/noche</span></div>
+            <div class="room-opt-b"><span class="rtag">👑 King</span><span class="rtag">🍷 Minibar</span><span class="rtag">🌆 Vista ciudad</span></div>
           </div>
           <div class="room-opt">
-            <div class="room-opt-h"><span class="rn">👑 Junior Suite</span><span class="rp">$189/night</span></div>
-            <div class="room-opt-b"><span class="rtag">🌅 Panoramic</span><span class="rtag">🛁 Jacuzzi</span><span class="rtag">🛎 Butler</span></div>
+            <div class="room-opt-h"><span class="rn">👑 Suite</span><span class="rp">$350/noche</span></div>
+            <div class="room-opt-b"><span class="rtag">🛁 Jacuzzi</span><span class="rtag">🌅 Terraza</span><span class="rtag">⭐ VIP</span></div>
           </div>
-        </div>All rooms include free WiFi, daily housekeeping & access to rooftop pool 🏊<br><br>To check <strong>real-time availability</strong>, just tell me your dates and number of guests!`);
-        setSuggestions(['2 guests, this Friday', '3 guests next weekend', '1 guest, March 5–7']);
+        </div>Todas incluyen WiFi gratis, limpieza diaria y acceso a la pileta rooftop 🏊<br><br>Para ver <strong>disponibilidad en tiempo real</strong>, decime tus fechas y cantidad de huéspedes!`);
+        setSuggestions(['2 personas, este viernes', '3 huéspedes próximo finde', '1 persona, 5–7 marzo']);
       }, 1000);
     }
 
@@ -852,22 +852,22 @@ function advanceReservations(text) {
       showTyping();
       setTimeout(() => {
         hideTyping();
-        addMessage('agent', `Happy to help! 😊 To check availability I need two things:<br><br>📅 <strong>Dates</strong> — e.g. "this Friday", "March 5 to 7"<br>👥 <strong>Guests</strong> — e.g. "2 people", "3 guests"<br><br>You can send both in one message, like: <em>"2 guests, March 5 to 7"</em>`);
-        setSuggestions(['2 guests this Friday', '3 guests next weekend', 'What rooms do you have?']);
+        addMessage('agent', `Con gusto te ayudo! 😊 Para verificar disponibilidad necesito dos datos:<br><br>📅 <strong>Fechas</strong> — ej: "este viernes", "5 al 7 de marzo"<br>👥 <strong>Huéspedes</strong> — ej: "2 personas", "3 huéspedes"<br><br>Podés mandarme todo junto, como: <em>"2 personas, 5 al 7 de marzo"</em>`);
+        setSuggestions(['2 personas este viernes', '3 huéspedes próximo finde', 'Qué habitaciones tienen?']);
       }, 900);
     } else if (!booking.guests) {
       showTyping();
       setTimeout(() => {
         hideTyping();
-        addMessage('agent', `Got it — <strong>${booking.checkIn} → ${booking.checkOut}</strong>! 📅<br><br>Just need one more thing: <strong>how many guests</strong> will be staying?`);
-        setSuggestions(['1 guest', '2 guests', '3 guests', '4 guests']);
+        addMessage('agent', `Perfecto — <strong>${booking.checkIn} → ${booking.checkOut}</strong>! 📅<br><br>Solo me falta un dato: <strong>cuántos huéspedes</strong> serían?`);
+        setSuggestions(['1 persona', '2 personas', '3 personas', '4 personas']);
       }, 900);
     } else {
       showTyping();
       setTimeout(() => {
         hideTyping();
-        addMessage('agent', `Great, <strong>${booking.guests} guest${booking.guests>1?'s':''}</strong>! 👥<br><br>Now I need the <strong>dates</strong>. Try something like:<br><span style="color:#666666;font-size:12.5px">• "this Friday"<br>• "March 5 to 7"<br>• "next weekend"<br>• "3rd to 7th March"</span>`);
-        setSuggestions(['This Friday','Next weekend','March 5 to 7']);
+        addMessage('agent', `Genial, <strong>${booking.guests} huésped${booking.guests>1?'es':''}</strong>! 👥<br><br>Ahora necesito las <strong>fechas</strong>. Probá algo como:<br><span style="color:#666666;font-size:12.5px">• "este viernes"<br>• "5 al 7 de marzo"<br>• "próximo fin de semana"<br>• "del 3 al 7 de marzo"</span>`);
+        setSuggestions(['Este viernes','Próximo finde','5 al 7 de marzo']);
       }, 900);
     }
 
@@ -879,11 +879,11 @@ function advanceReservations(text) {
       showTyping();
       setTimeout(() => {
         hideTyping();
-        addMessage('agent', `I didn't catch which room you'd like 😊 Please choose one of these:<br><br>🛏 <strong>Standard</strong> — $${89*booking.nights} total<br>✨ <strong>Superior</strong> — $${129*booking.nights} total<br>👑 <strong>Suite</strong> — $${189*booking.nights} total<br><br>Just type the room name or tap a button below!`);
+        addMessage('agent', `No capté qué habitación te gustaría 😊 Elegí una de estas:<br><br>🛏 <strong>Standard</strong> — $${120*booking.nights} total<br>✨ <strong>Deluxe</strong> — $${200*booking.nights} total<br>👑 <strong>Suite</strong> — $${350*booking.nights} total<br><br>Escribí el nombre o tocá un botón!`);
         setSuggestions([
-          { label:`🛏 Standard — $${89*booking.nights}`,  action:()=>{ addMessage('user','Standard Room please'); clearSuggestions(); selectRoom('standard'); }},
-          { label:`✨ Superior — $${129*booking.nights}`, action:()=>{ addMessage('user','Superior Room please'); clearSuggestions(); selectRoom('superior'); }},
-          { label:`👑 Suite — $${189*booking.nights}`,    action:()=>{ addMessage('user','Junior Suite please'); clearSuggestions(); selectRoom('suite'); }},
+          { label:`🛏 Standard — $${120*booking.nights}`,  action:()=>{ addMessage('user','Standard por favor'); clearSuggestions(); selectRoom('standard'); }},
+          { label:`✨ Deluxe — $${200*booking.nights}`,    action:()=>{ addMessage('user','Deluxe por favor'); clearSuggestions(); selectRoom('deluxe'); }},
+          { label:`👑 Suite — $${350*booking.nights}`,     action:()=>{ addMessage('user','Suite por favor'); clearSuggestions(); selectRoom('suite'); }},
         ]);
       }, 800);
     }
@@ -898,25 +898,25 @@ function advanceReservations(text) {
       showTyping();
       setTimeout(() => {
         hideTyping();
-        addMessage('agent', `Could you please share your <strong>full name</strong> to complete the booking?`);
+        addMessage('agent', `¿Podrías compartirme tu <strong>nombre completo</strong> para completar la reserva?`);
       }, 800);
     }
 
   } else { // done — answer follow-up questions
     const t = text.toLowerCase();
-    let reply = `Of course! For anything else feel free to message us anytime. See you soon, ${booking.name || 'there'}! 😊`;
+    let reply = `Por supuesto! Para cualquier otra consulta escribinos cuando quieras. ¡Te esperamos, ${booking.name || ''}! 😊`;
     if (t.match(/early|check.?in|arrive|llegada/))
-      reply = `I've added an early check-in request to your reservation ✅ Our front desk will do their best to have your room ready by noon. You'll get a WhatsApp notification when it's ready!`;
+      reply = `Agregué un pedido de early check-in a tu reserva ✅ El costo es $20 USD (sujeto a disponibilidad). Te avisamos por WhatsApp cuando esté lista la habitación!`;
     else if (t.match(/wifi|internet|password|contraseña/))
-      reply = `📶 <strong>WiFi:</strong> Network <strong>Miramar_Guest</strong> · Password <strong>Miramar2024!</strong><br>Available in all rooms and common areas. Anything else?`;
+      reply = `📶 <strong>WiFi:</strong> Red <strong>PalermSoho-Guest</strong> · Clave <strong>palermo2024</strong><br>Disponible en todas las habitaciones y áreas comunes. ¿Algo más?`;
     else if (t.match(/breakfast|desayun|food|comer/))
-      reply = `🍳 Breakfast at <strong>La Terraza</strong>:<br>Mon–Fri 7:00–10:30 AM · Sat–Sun 7:30–11:30 AM<br>Full buffet included. Enjoy!`;
-    else if (t.match(/pool|piscina|spa|gym/))
-      reply = `🏊 Rooftop Pool: <strong>7 AM–10 PM</strong> · Spa: <strong>9 AM–9 PM</strong> · Gym: 24h. Towels provided at the deck!`;
-    else if (t.match(/park|valet|coche|car/))
-      reply = `🚗 Valet parking $28/night · Self-park $18/night (Level B2). Both available 24/7.`;
+      reply = `🍳 Desayuno en <strong>Restaurant Nivel 1</strong>:<br>Todos los días <strong>07:00 – 11:00</strong><br>Buffet completo incluido. ¡Que lo disfrutes!`;
+    else if (t.match(/pool|piscina|pileta|spa|gym/))
+      reply = `🏊 Pileta Rooftop: <strong>08:00–20:00</strong> · Spa: <strong>10:00–20:00</strong> (cargo extra) · Gym: 24/7.`;
+    else if (t.match(/park|valet|coche|car|estacion/))
+      reply = `🚗 Estacionamiento: <strong>$15/día</strong>. Plazas limitadas, consultá disponibilidad en recepción.`;
     else if (t.match(/cancel|cambiar|change|modify/))
-      reply = `No problem! I can help with changes. Your booking is <strong>free cancellation</strong> up to 24h before check-in. Would you like to modify dates, room type or cancel?`;
+      reply = `Sin problema! Cancelación <strong>gratuita hasta 48h antes</strong> del arribo. ¿Querés modificar fechas, tipo de habitación o cancelar?`;
     showTyping();
     setTimeout(() => { hideTyping(); addMessage('agent', reply); }, 1100);
   }
@@ -927,7 +927,7 @@ function showAvailability() {
   showTyping();
   setTimeout(() => {
     hideTyping();
-    addMessage('agent', `Checking availability for <strong>${booking.guests} guest${booking.guests>1?'s':''}</strong> · <strong>${booking.checkIn} → ${booking.checkOut}</strong> (${booking.nights} night${booking.nights>1?'s':''})…`);
+    addMessage('agent', `Verificando disponibilidad para <strong>${booking.guests} huésped${booking.guests>1?'es':''}</strong> · <strong>${booking.checkIn} → ${booking.checkOut}</strong> (${booking.nights} noche${booking.nights>1?'s':''})…`);
     showTyping();
     setTimeout(() => {
       hideTyping();
@@ -942,18 +942,18 @@ function showAvailability() {
             </div>
             <div class="room-opt-b">
               ${r.tags.map(t=>`<span class="rtag">${t}</span>`).join('')}
-              <span class="rtag" style="background:#e8f5e9;color:#2e7d32">✓ ${r.avail} left</span>
+              <span class="rtag" style="background:#e8f5e9;color:#2e7d32">✓ ${r.avail} disponible${r.avail>1?'s':''}</span>
             </div>
             <div style="padding:3px 10px 7px;font-size:11.5px;color:#666666">
-              ${booking.nights} night${booking.nights>1?'s':''}: <strong style="color:#111">$${total} total</strong> · Tap to book
+              ${booking.nights} noche${booking.nights>1?'s':''}: <strong style="color:#111">$${total} total</strong> · Tocá para reservar
             </div>
           </div>`;
       });
-      addMessage('agent', `✅ <strong>3 room types available</strong> for your dates! Tap a room to book it:<div class="room-opts">${cards}</div>`);
+      addMessage('agent', `✅ <strong>3 tipos de habitación disponibles</strong> para tus fechas! Tocá una para reservar:<div class="room-opts">${cards}</div>`);
       setSuggestions([
-        { label:`🛏 Standard — $${89*booking.nights}`,   action:()=>{ addMessage('user','Standard Room please'); clearSuggestions(); selectRoom('standard'); }},
-        { label:`✨ Superior — $${129*booking.nights}`,  action:()=>{ addMessage('user','Superior Room please'); clearSuggestions(); selectRoom('superior'); }},
-        { label:`👑 Suite — $${189*booking.nights}`,     action:()=>{ addMessage('user','Junior Suite please'); clearSuggestions(); selectRoom('suite'); }},
+        { label:`🛏 Standard — $${120*booking.nights}`,  action:()=>{ addMessage('user','Standard por favor'); clearSuggestions(); selectRoom('standard'); }},
+        { label:`✨ Deluxe — $${200*booking.nights}`,    action:()=>{ addMessage('user','Deluxe por favor'); clearSuggestions(); selectRoom('deluxe'); }},
+        { label:`👑 Suite — $${350*booking.nights}`,     action:()=>{ addMessage('user','Suite por favor'); clearSuggestions(); selectRoom('suite'); }},
       ]);
     }, 1800);
   }, 900);
@@ -970,10 +970,10 @@ function selectRoom(key) {
     hideTyping();
     addMessage('agent', `${r.icon} <strong>${r.name}</strong> — ${r.view}<br><br>
       📅 ${booking.checkIn} → ${booking.checkOut}<br>
-      👥 ${booking.guests} guest${booking.guests>1?'s':''} · ${booking.nights} night${booking.nights>1?'s':''}<br>
+      👥 ${booking.guests} huésped${booking.guests>1?'es':''} · ${booking.nights} noche${booking.nights>1?'s':''}<br>
       💰 <strong>$${total} total</strong><br><br>
-      To confirm the booking, what's your <strong>full name</strong>?`);
-    setSuggestions(['Sarah Johnson','John Smith','María García']);
+      Para confirmar la reserva, ¿cuál es tu <strong>nombre completo</strong>?`);
+    setSuggestions(['Juan Pérez','María García','Carlos López']);
   }, 1200);
 }
 
@@ -983,30 +983,30 @@ function confirmBooking() {
   showTyping();
   setTimeout(() => {
     hideTyping();
-    const num   = 'MIR-' + (10000 + Math.floor(Math.random() * 89999));
+    const num   = 'PLR-' + (1000 + Math.floor(Math.random() * 8999)) + '-' + (100 + Math.floor(Math.random() * 899));
     const total = booking.room.price * booking.nights;
     addMessage('agent', `
       <div class="conf-card">
-        <div class="conf-title">✅ Booking Confirmed!</div>
-        <div class="conf-row"><span>Guest</span><strong>${booking.name}</strong></div>
-        <div class="conf-row"><span>Room</span><span>${booking.room.name} — ${booking.room.view}</span></div>
-        <div class="conf-row"><span>Check-in</span><span>${booking.checkIn} · 3:00 PM</span></div>
-        <div class="conf-row"><span>Check-out</span><span>${booking.checkOut} · 12:00 PM</span></div>
-        <div class="conf-row"><span>Guests</span><span>${booking.guests}</span></div>
+        <div class="conf-title">✅ Reserva Confirmada!</div>
+        <div class="conf-row"><span>Huésped</span><strong>${booking.name}</strong></div>
+        <div class="conf-row"><span>Habitación</span><span>${booking.room.name} — ${booking.room.view}</span></div>
+        <div class="conf-row"><span>Check-in</span><span>${booking.checkIn} · 15:00</span></div>
+        <div class="conf-row"><span>Check-out</span><span>${booking.checkOut} · 11:00</span></div>
+        <div class="conf-row"><span>Huéspedes</span><span>${booking.guests}</span></div>
         <div class="conf-row"><span>Total</span><strong>$${total}</strong></div>
         <div class="conf-num">${num}</div>
       </div>`);
     setTimeout(() => {
-      addMessage('agent', `📧 A confirmation email is on its way with:<br>• Booking details & receipt<br>• Hotel address & directions<br>• Contact: <strong>+1 (305) 555-0192</strong><br>• WhatsApp: <strong>+1 (305) 555-0193</strong><br>• Email: <strong>info@hotelmiramar.com</strong>`);
+      addMessage('agent', `📧 Te estamos enviando un email de confirmación con:<br>• Detalles de la reserva y recibo<br>• Dirección: <strong>Honduras 4742, Palermo Soho, Buenos Aires</strong><br>• Teléfono: <strong>+54 11 4833-1234</strong><br>• Cancelación gratuita hasta 48h antes`);
       setTimeout(() => {
-        addMessage('agent', `💡 <strong>Save time on arrival!</strong> You can complete your <strong>mobile check-in</strong> right here on WhatsApp before you arrive — no queue at reception, go straight to your room 🔑<br><br>Want to do it now?`);
+        addMessage('agent', `💡 <strong>¡Ahorrá tiempo al llegar!</strong> Podés completar tu <strong>check-in online</strong> acá mismo por WhatsApp antes de llegar — sin cola en recepción, directo a tu habitación 🔑<br><br>¿Querés hacerlo ahora?`);
         setSuggestions([
-          { label: 'Yes, do check-in now ✅', action: () => { addMessage('user','Yes, do check-in now'); clearSuggestions(); switchTab('reception'); setTimeout(startCheckIn, 600); }},
-          'I\'ll do it later',
+          { label: 'Sí, hacer check-in ✅', action: () => { addMessage('user','Sí, quiero hacer el check-in'); clearSuggestions(); switchTab('reception'); setTimeout(startCheckIn, 600); }},
+          'Lo hago después',
         ]);
       }, 1200);
     }, 900);
-    setSuggestions(['Can I request early check-in?','What are the pool hours?']);
+    setSuggestions(['¿Puedo pedir early check-in?','¿Horarios de pileta?']);
   }, 2000);
 }
 
@@ -1014,95 +1014,95 @@ function confirmBooking() {
 
 const CONCIERGE = {
   wifi: {
-    match: /wifi|wi-fi|internet|password|contraseña|red|network|connect/i,
-    reply: `📶 <strong>WiFi Details</strong><br><br>Network: <strong>Miramar_Guest</strong><br>Password: <strong>Miramar2024!</strong><br><br>For best speeds use the 5GHz band. Having trouble? Call ext. <strong>0</strong> anytime — we'll connect you in minutes.`,
-    follow: ['Pool hours?', 'What time is breakfast?']
+    match: /wifi|wi-fi|internet|password|contraseña|red|network|connect|clave/i,
+    reply: `📶 <strong>WiFi</strong><br><br>Red: <strong>PalermSoho-Guest</strong><br>Clave: <strong>palermo2024</strong><br><br>Disponible en todas las habitaciones y áreas comunes. ¿Tenés algún problema? Llamá a recepción al <strong>0</strong> — te ayudamos al toque.`,
+    follow: ['Horario de pileta?', 'Horario de desayuno?']
   },
   breakfast: {
     match: /breakfast|desayun|buffet|eat|morning|mañana|comer|food|café|coffee/i,
-    reply: `🍳 <strong>Breakfast — La Terraza Restaurant</strong><br><br>🕖 Mon–Fri: <strong>7:00 – 10:30 AM</strong><br>🕖 Sat–Sun: <strong>7:30 – 11:30 AM</strong><br><br>Full hot & cold buffet, live egg station, artisan pastries & freshly squeezed juices. Enjoy! ☀️<br><br><em>Room service breakfast available until noon (+$5 tray fee)</em>`,
-    follow: ['WiFi password?', 'Room service menu?']
+    reply: `🍳 <strong>Desayuno — Restaurant Nivel 1</strong><br><br>🕖 Todos los días: <strong>07:00 – 11:00</strong><br><br>Buffet completo con opciones calientes y frías, estación de huevos, medialunas artesanales y jugos naturales ☀️<br><br><em>Room service de desayuno disponible hasta las 12:00</em>`,
+    follow: ['Clave de WiFi?', 'Menú de room service?']
   },
   pool: {
-    match: /pool|piscina|spa|jacuzzi|gym|fitness|sauna|steam|alberca|nadar|swim/i,
-    reply: `🏊 <strong>Pool & Wellness</strong><br><br>🏊 Rooftop Pool: <strong>7:00 AM – 10:00 PM</strong><br>🧖 Spa & Steam Room: <strong>9:00 AM – 9:00 PM</strong><br>🏋️ Fitness Center: <strong>24 hours</strong><br><br>Towels & sunscreen provided at the pool deck. Spa treatments require reservations — call ext. <strong>3</strong>.`,
-    follow: ['Book a spa treatment', 'Breakfast hours?']
+    match: /pool|piscina|pileta|spa|jacuzzi|gym|fitness|sauna|steam|nadar|swim/i,
+    reply: `🏊 <strong>Pileta y Wellness</strong><br><br>🏊 Pileta Rooftop: <strong>08:00 – 20:00</strong><br>🧖 Spa: <strong>10:00 – 20:00</strong> (cargo extra)<br>🏋️ Gym: <strong>24/7</strong><br><br>Toallas disponibles en el deck. Tratamientos de spa con reserva previa — consultá en recepción.`,
+    follow: ['Reservar un spa', 'Horario de desayuno?']
   },
   parking: {
     match: /park|valet|car|coche|auto|garaje|vehicle|estacion/i,
-    reply: `🚗 <strong>Parking Options</strong><br><br>🏨 <strong>Valet Service:</strong> $28/night — 24/7 at the main entrance<br>🅿️ <strong>Self-parking:</strong> $18/night — Level B2<br><br>Your vehicle is in a fully monitored, secure facility. Call ext. <strong>5</strong> anytime to retrieve it. Average wait: under 5 minutes.`,
-    follow: ['WiFi password?', 'Check-out time?']
+    reply: `🚗 <strong>Estacionamiento</strong><br><br>🅿️ <strong>$15/día</strong> — plazas limitadas<br><br>Consultá disponibilidad en recepción. Acceso las 24hs.`,
+    follow: ['Clave de WiFi?', 'Hora de check-out?']
   },
   checkout: {
     match: /check.?out|checkout|salida|leave|exit|late check|hora de salida/i,
-    reply: `🏁 <strong>Check-out</strong><br><br>📱 Express check-out via the hotel app — no front desk stop needed<br>🕛 Standard check-out: <strong>12:00 PM</strong><br>🕐 Late check-out options:<br>&nbsp;&nbsp;• Until 2:00 PM → <strong>$25</strong><br>&nbsp;&nbsp;• Until 4:00 PM → <strong>$50</strong><br><br>Your invoice will be emailed automatically. Want to request a late check-out?`,
-    follow: ['Yes, request late check-out', 'No, that\'s fine']
+    reply: `🏁 <strong>Check-out</strong><br><br>🕛 Check-out estándar: <strong>11:00</strong><br>🕐 Late checkout: <strong>$30</strong> (sujeto a disponibilidad)<br><br>La factura se envía por email automáticamente. ¿Querés solicitar late checkout?`,
+    follow: ['Sí, pedir late checkout', 'No, está bien así']
   },
   roomservice: {
     match: /room service|roomservice|order|food|dinner|lunch|cena|almuerzo|pedir|hambre|hungry|eat/i,
-    reply: `🍽 <strong>Room Service</strong><br><br>Available: <strong>6:00 AM – midnight</strong> (limited menu until 2 AM)<br><br>📱 Order via the hotel app — fastest option (~15 min)<br>📞 Call ext. <strong>4</strong> from your room (~20 min)<br><br>🌟 Tonight's chef special: <em>Seafood linguine with saffron broth</em><br>🥗 Vegan & gluten-free options available`,
-    follow: ['What\'s the full menu?', 'WiFi to use the app?']
+    reply: `🍽 <strong>Room Service</strong><br><br>Disponible: <strong>07:00 – 23:00</strong><br><br>📱 Pedí desde la tablet de la habitación (~15 min)<br>📞 Llamá a recepción desde tu habitación (~20 min)<br><br>🌟 Menú completo disponible en la tablet de la habitación<br>🥗 Opciones veganas y sin TACC disponibles`,
+    follow: ['Menú completo?', 'WiFi para la tablet?']
   },
   taxi: {
-    match: /taxi|uber|cab|transport|airport|aeropuerto|transfer|ride|llevar/i,
-    reply: `🚕 <strong>Transport & Transfers</strong><br><br>We can arrange:<br>🛫 Airport transfer: <strong>$45</strong> (sedan) / <strong>$65</strong> (SUV)<br>🚕 City taxi: ~$12–18 depending on destination<br>🚌 Shuttle to city center: every 30 min, <strong>$5/person</strong><br><br>Just let me know your destination and pickup time — I'll have it ready for you! 🙌`,
-    follow: ['Book airport transfer', 'Schedule a taxi for tonight']
+    match: /taxi|uber|cab|transport|airport|aeropuerto|transfer|ride|llevar|remis/i,
+    reply: `🚕 <strong>Transporte</strong><br><br>Podemos organizar:<br>🛫 Transfer desde Ezeiza: <strong>$35 USD</strong> (taxi) / <strong>$40 USD</strong> (transfer privado)<br>🛫 Transfer desde Aeroparque: <strong>$15 USD</strong> (taxi)<br><br>Decime tu destino y horario — lo coordinamos para vos 🙌`,
+    follow: ['Reservar transfer', 'Taxi para esta noche']
   },
   towels: {
     match: /towel|toalla|amenities|shampoo|soap|jabón|pillow|almohada|blanket|manta|iron|plancha/i,
-    reply: `🛎 <strong>Housekeeping Request</strong><br><br>I'm sending a request to housekeeping right now! Expected delivery: <strong>15–20 minutes</strong>.<br><br>You can also call ext. <strong>2</strong> directly for immediate assistance. Is there anything else you need for your room?`,
-    follow: ['Extra pillows too please', 'That\'s all, thank you!']
+    reply: `🛎 <strong>Pedido a Housekeeping</strong><br><br>Ya estoy enviando tu pedido a housekeeping. Entrega estimada: <strong>15–20 minutos</strong>.<br><br>También podés llamar a recepción al <strong>0</strong> para asistencia inmediata. ¿Necesitás algo más?`,
+    follow: ['Almohadas extra también', 'Eso es todo, gracias!']
   },
   laundry: {
-    match: /laundry|lavandería|wash|dry clean|ropa|clothes|lavar/i,
-    reply: `👔 <strong>Laundry Service</strong><br><br>🕗 Same-day service: drop off before <strong>9:00 AM</strong>, back by 6 PM<br>⚡ Express (4h): +50% surcharge<br>🧺 Dry cleaning available<br><br>Leave your laundry bag (provided in the closet) outside your door or call ext. <strong>2</strong>. Prices on the in-room menu.`,
-    follow: ['What are the prices?', 'Thanks!']
+    match: /laundry|lavandería|lavanderia|wash|dry clean|ropa|clothes|lavar/i,
+    reply: `👔 <strong>Servicio de Lavandería</strong><br><br>🕗 Servicio del día: dejá antes de las <strong>09:00</strong>, listo a las 18:00<br>⚡ Express (4h): +50% de recargo<br>🧺 Dry cleaning disponible<br><br>Dejá la bolsa de lavandería (en el placard) fuera de tu puerta o llamá a recepción.`,
+    follow: ['Cuánto sale?', 'Gracias!']
   },
   wakeup: {
     match: /wake.?up|alarm|despertar|llamada|morning call/i,
-    reply: `⏰ <strong>Wake-up Call</strong><br><br>No problem! I've scheduled a wake-up call for you. Just confirm the time you'd like — I'll make sure you don't miss it 😊<br><br>You can also set it directly on your room phone: press <strong>*55</strong> and follow the prompts.`,
-    follow: ['6:00 AM please', '7:30 AM']
+    reply: `⏰ <strong>Llamada de Despertador</strong><br><br>¡Sin problema! Confirmame la hora que querés — me aseguro de que no te la pierdas 😊<br><br>También podés configurarlo desde el teléfono de la habitación.`,
+    follow: ['6:00 AM por favor', '7:30 AM']
   },
   complaint: {
     match: /problem|issue|broken|not working|complaint|queja|problema|roto|noise|ruido|cold|calor|hot|ac|heat|temperatura/i,
-    reply: `🙏 I'm really sorry to hear that — that's not the experience we want you to have!<br><br>I'm flagging this with our maintenance team <strong>right now</strong> as a priority. Someone will be at your room within <strong>15 minutes</strong>.<br><br>As an apology, I'm adding a <strong>complimentary drink</strong> credit to your room account. 🍹 Is there anything else I can help with?`,
-    follow: ['Thank you!', 'Please also bring extra towels']
+    reply: `🙏 Lamento mucho escuchar eso — esa no es la experiencia que queremos para vos!<br><br>Ya estoy escalando esto a nuestro equipo de mantenimiento <strong>como prioridad</strong>. Alguien va a estar en tu habitación en <strong>15 minutos</strong>.<br><br>Como disculpa, te sumamos un <strong>crédito de bebida gratis</strong> a tu cuenta. 🍹 ¿Hay algo más en que pueda ayudarte?`,
+    follow: ['Gracias!', 'También traigan toallas extra']
   },
   restaurant: {
-    match: /restaurant|dinner|reserv|table|mesa|tonight|esta noche|eat out|cena/i,
-    reply: `🍽 <strong>Restaurant Recommendation</strong><br><br>Our concierge team loves these nearby spots:<br><br>⭐ <strong>La Mar</strong> — Peruvian seafood, 5 min walk (book in advance!)<br>⭐ <strong>El Mercado</strong> — Local tapas & wine, 3 min walk<br>⭐ <strong>Sakura</strong> — Japanese omakase, 8 min taxi<br><br>Want me to make a reservation for you tonight? Just tell me the time and number of people! 😊`,
-    follow: ['Book La Mar for 2 at 8pm', 'What else is nearby?']
+    match: /restaurant|dinner|reserv|table|mesa|tonight|esta noche|eat out|cena|donde comer|restaurante/i,
+    reply: `🍽 <strong>Restaurantes Recomendados en Palermo</strong><br><br>Nuestro concierge recomienda:<br><br>⭐ <strong>Don Julio</strong> — Parrilla de autor, 10 min caminando<br>⭐ <strong>Proper</strong> — Cocina contemporánea en Plaza Serrano, 2 cuadras<br>⭐ <strong>Osaka</strong> — Nikkei, 5 min en taxi<br><br>¿Querés que te haga una reserva? Decime horario y cantidad de personas 😊`,
+    follow: ['Reservar Don Julio para 2 a las 21hs', 'Qué más hay cerca?']
   },
   checkin: {
     match: /check.?in|checkin|arrive|llegada|when can|room ready|llego/i,
-    reply: `🔑 <strong>Check-in Information</strong><br><br>Standard check-in: <strong>3:00 PM</strong><br><br>📱 You'll receive a <strong>digital key</strong> on WhatsApp — no need to stop at the front desk<br>🌅 Early check-in: available from <strong>12:00 PM</strong> (subject to availability, complimentary for you!)<br><br>Want me to request early check-in for your arrival?`,
-    follow: ['Yes please, request early check-in', 'No, 3 PM is fine']
+    reply: `🔑 <strong>Información de Check-in</strong><br><br>Check-in estándar: <strong>15:00</strong><br><br>📱 Recibís tu <strong>llave digital</strong> por WhatsApp — sin pasar por recepción<br>🌅 Early check-in: disponible desde las <strong>12:00</strong> ($20 USD, sujeto a disponibilidad)<br><br>¿Querés que solicite early check-in para tu llegada?`,
+    follow: ['Sí, pedir early check-in', 'No, 15:00 está bien']
   },
   spa: {
     match: /spa|massage|masaje|treatment|facial|manicure|pedicure|beauty/i,
-    reply: `💆 <strong>Miramar Spa & Wellness</strong><br><br>Open daily <strong>9:00 AM – 9:00 PM</strong><br><br>Popular treatments:<br>💆 Swedish Massage (60 min) — <strong>$95</strong><br>💆 Deep Tissue (90 min) — <strong>$135</strong><br>✨ Signature Facial (60 min) — <strong>$85</strong><br>💅 Manicure + Pedicure — <strong>$65</strong><br><br>Shall I book a treatment for you? Tell me the service and your preferred time 🙌`,
-    follow: ['Book a massage for tomorrow', 'What other treatments are available?']
+    reply: `💆 <strong>Spa & Wellness</strong><br><br>Abierto todos los días <strong>10:00 – 20:00</strong><br><br>Tratamientos populares:<br>💆 Masaje Relajante (60 min) — <strong>$50</strong><br>💆 Masaje Descontracturante (90 min) — <strong>$135</strong><br>✨ Facial Signature (60 min) — <strong>$85</strong><br><br>¿Querés reservar un tratamiento? Decime el servicio y tu horario preferido 🙌`,
+    follow: ['Reservar un masaje para mañana', 'Qué otros tratamientos tienen?']
   },
 };
 
 function initReception() {
-  addDateChip('Pre-arrival · Thu, 20 Feb');
+  addDateChip('Pre-arrival · Jue, 20 Feb');
   setTimeout(() => {
     addMessage('agent',
-      `🌟 Good evening! This is <strong>Hotel Miramar</strong>.<br><br>Your check-in is <strong>tomorrow at 3:00 PM</strong>. We're so excited to welcome you!`, '20:30');
+      `🌟 ¡Buenas tardes! Soy Velora de <strong>Hotel Palermo Soho</strong>.<br><br>Tu check-in es <strong>mañana a las 15:00</strong>. ¡Te esperamos con todo!`, '20:30');
     setTimeout(() => {
       addMessage('agent',
-        `Here's a quick preview of what awaits:<br><br>
-         🔑 Digital key sent to your WhatsApp before arrival<br>
-         🚗 Valet parking at the main entrance ($28/night)<br>
-         🏊 Rooftop pool open until 10 PM tonight<br>
-         🍳 Breakfast from 7:00 AM at La Terraza<br><br>
-         Just type anything — I'm your 24/7 concierge 😊`);
+        `Acá te dejo un adelanto de lo que te espera:<br><br>
+         🔑 Llave digital por WhatsApp antes de llegar<br>
+         🚗 Estacionamiento disponible ($15/día)<br>
+         🏊 Pileta rooftop abierta hasta las 20:00<br>
+         🍳 Desayuno desde las 07:00 en Restaurant Nivel 1<br><br>
+         Escribime lo que necesites — soy tu concierge 24/7 😊`);
       setSuggestions([
-        'Do my online check-in',
-        'WiFi password?',
-        'Can I order room service?',
-        'I need a taxi',
+        'Hacer mi check-in online',
+        'Clave de WiFi?',
+        'Room service?',
+        'Necesito un taxi',
       ]);
     }, 800);
   }, 300);
@@ -1128,11 +1128,11 @@ function routeReception(text) {
     }
   }
   // Late check-out confirmation
-  if (text.toLowerCase().match(/yes.*late|late.*yes|sí.*tarde|request.*late/i)) {
+  if (text.toLowerCase().match(/yes.*late|late.*yes|sí.*tarde|request.*late|pedir.*late/i)) {
     showTyping();
     return setTimeout(() => {
       hideTyping();
-      addMessage('agent', `✅ Late check-out until <strong>2:00 PM</strong> confirmed! The $25 charge will be added to your room bill. Sleep in and enjoy a relaxed morning 🌅`);
+      addMessage('agent', `✅ Late checkout confirmado! Se agrega un cargo de <strong>$30</strong> a tu cuenta (sujeto a disponibilidad). Disfrutá una mañana relajada 🌅`);
       clearSuggestions();
     }, 1200);
   }
@@ -1142,7 +1142,7 @@ function routeReception(text) {
     showTyping();
     return setTimeout(() => {
       hideTyping();
-      addMessage('agent', `⏰ Wake-up call set for <strong>${text.trim()}</strong> — done! Is there anything else I can arrange for you? 😊`);
+      addMessage('agent', `⏰ Llamada de despertador programada para las <strong>${text.trim()}</strong> — ¡listo! ¿Necesitás algo más? 😊`);
       clearSuggestions();
     }, 1000);
   }
@@ -1151,7 +1151,7 @@ function routeReception(text) {
     showTyping();
     return setTimeout(() => {
       hideTyping();
-      addMessage('agent', `Perfect! Have a wonderful stay 🌟 Remember, I'm here 24/7 — just send a message anytime!`);
+      addMessage('agent', `¡Perfecto! Que tengas una estadía increíble 🌟 Recordá que estoy disponible 24/7 — escribime cuando necesites!`);
       clearSuggestions();
     }, 900);
   }
@@ -1159,25 +1159,25 @@ function routeReception(text) {
   showTyping();
   setTimeout(() => {
     hideTyping();
-    addMessage('agent', `Got it! I'm passing your request to our team right now 🙌 You can expect a response within a few minutes.<br><br>Is there anything else I can help you with?`);
+    addMessage('agent', `¡Entendido! Ya estoy pasando tu pedido a nuestro equipo 🙌 Esperá una respuesta en unos minutos.<br><br>¿Hay algo más en que pueda ayudarte?`);
     setSuggestions([
-      'WiFi password?',
-      'Pool hours?',
-      'Order room service',
-      'Need a taxi',
+      'Clave de WiFi?',
+      'Horario de pileta?',
+      'Room service',
+      'Necesito un taxi',
     ]);
   }, 1300);
 }
 
 // ── AUTO CHECK-IN FLOW ──
 const CI_STEPS = {
-  reservation: { label: 'Reservation Number', q: `First, your <strong>reservation number</strong>.<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "MIR-48291" — found in your booking confirmation</span>`, hint: null },
-  name:        { label: 'Full Name',           q: `Your <strong>full name</strong> as it appears on your ID?`, hint: null },
-  doc:         { label: 'ID Document',         q: `Your <strong>ID document</strong>:<br>Type the document type and number.<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "Passport AB123456" · "DNI 12345678X"</span>`, hint: null },
-  dob:         { label: 'Date of Birth',       q: `Your <strong>date of birth</strong>? (DD/MM/YYYY)<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "15/03/1990"</span>`, hint: null },
-  nationality: { label: 'Nationality',         q: `Your <strong>nationality</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "Spanish", "Argentine", "American"</span>`, hint: ['Spanish','Argentine','Mexican','American','British'] },
-  address:     { label: 'Home Address',        q: `Your <strong>home address</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">Street, number, city and country<br>e.g. "Av. Corrientes 1234, Buenos Aires, Argentina"</span>`, hint: null },
-  arrival:     { label: 'Estimated Arrival',   q: `What time do you expect to <strong>arrive at the hotel</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "3 PM", "around 15:30", "after 6 PM"</span>`, hint: ['Before 3 PM','Around 3–4 PM','After 6 PM','Late night (after 10 PM)'] },
+  reservation: { label: 'Nro. Reserva', q: `Primero, tu <strong>número de reserva</strong>.<br><span style="color:rgba(255,255,255,.6);font-size:12px">ej: "PLR-1234-567" — lo encontrás en tu confirmación</span>`, hint: null },
+  name:        { label: 'Nombre',           q: `Tu <strong>nombre completo</strong> tal como aparece en tu documento?`, hint: null },
+  doc:         { label: 'Documento',         q: `Tu <strong>documento de identidad</strong>:<br>Escribí el tipo y número.<br><span style="color:rgba(255,255,255,.6);font-size:12px">ej: "Pasaporte AB123456" · "DNI 12345678"</span>`, hint: null },
+  dob:         { label: 'Fecha Nac.',       q: `Tu <strong>fecha de nacimiento</strong>? (DD/MM/AAAA)<br><span style="color:rgba(255,255,255,.6);font-size:12px">ej: "15/03/1990"</span>`, hint: null },
+  nationality: { label: 'Nacionalidad',         q: `Tu <strong>nacionalidad</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">ej: "Argentina", "Española", "Americana"</span>`, hint: ['Argentina','Española','Mexicana','Americana','Brasileña'] },
+  address:     { label: 'Dirección',        q: `Tu <strong>dirección</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">Calle, número, ciudad y país<br>ej: "Av. Corrientes 1234, Buenos Aires, Argentina"</span>`, hint: null },
+  arrival:     { label: 'Hora de Llegada',   q: `¿A qué hora estimás <strong>llegar al hotel</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">ej: "15:00", "alrededor de las 16:00", "después de las 18:00"</span>`, hint: ['Antes de las 15:00','Entre 15:00–16:00','Después de las 18:00','Noche (después de 22:00)'] },
 };
 
 const CI_ORDER = ['reservation','name','doc','dob','nationality','address','arrival'];
@@ -1195,7 +1195,7 @@ function startCheckIn() {
   showTyping();
   setTimeout(() => {
     hideTyping();
-    addMessage('agent', `✅ <strong>Online Check-in</strong><br><br>Perfect! I'll guide you through the process — it only takes <strong>2 minutes</strong> and you'll receive your digital room key when done 🔑<br><br>I'll need a few details for the hotel registry. Let's start!`);
+    addMessage('agent', `✅ <strong>Check-in Online</strong><br><br>¡Perfecto! Te guío en el proceso — son solo <strong>2 minutos</strong> y al final recibís tu llave digital 🔑<br><br>Necesito algunos datos para el registro del hotel. ¡Empecemos!`);
     setTimeout(() => {
       addMessage('agent', `<div class="ci-card" style="background:linear-gradient(135deg,#4401ff,#6630ff)">${progressBar('reservation')}<div style="font-size:13px">${CI_STEPS.reservation.q}</div></div>`);
     }, 700);
@@ -1212,8 +1212,8 @@ function handleCheckIn(text) {
       showTyping();
       setTimeout(() => {
         hideTyping();
-        addMessage('agent', `No problem! Let's start over. Which detail would you like to correct?`);
-        setSuggestions(CI_ORDER.map(k => `Correct ${CI_STEPS[k].label}`));
+        addMessage('agent', `¡Sin problema! Empecemos de nuevo. ¿Qué dato querés corregir?`);
+        setSuggestions(CI_ORDER.map(k => `Corregir ${CI_STEPS[k].label}`));
       }, 800);
     } else {
       completeCheckIn(); // assume yes
@@ -1227,7 +1227,7 @@ function handleCheckIn(text) {
     showTyping();
     return setTimeout(() => {
       hideTyping();
-      addMessage('agent', `I didn't catch that 😊 ${CI_STEPS[ciPhase].q}`);
+      addMessage('agent', `No capté eso 😊 ${CI_STEPS[ciPhase].q}`);
     }, 700);
   }
 
@@ -1245,17 +1245,17 @@ function handleCheckIn(text) {
     showTyping();
     setTimeout(() => {
       hideTyping();
-      addMessage('agent', `Almost done! Please review your information:<div class="ci-card">
-        <div class="ci-card-title">📋 Check-in Summary</div>
-        <div class="ci-row"><span>Reservation</span><span>${ciData.reservation}</span></div>
-        <div class="ci-row"><span>Full Name</span><span>${ciData.name}</span></div>
-        <div class="ci-row"><span>Document</span><span>${ciData.doc}</span></div>
-        <div class="ci-row"><span>Date of Birth</span><span>${ciData.dob}</span></div>
-        <div class="ci-row"><span>Nationality</span><span>${ciData.nationality}</span></div>
-        <div class="ci-row"><span>Home Address</span><span>${ciData.address}</span></div>
-        <div class="ci-row"><span>Arrival</span><span>${ciData.arrival}</span></div>
-      </div>Is everything correct?`);
-      setSuggestions(['Yes, confirm check-in ✅', 'No, I need to change something']);
+      addMessage('agent', `¡Casi listo! Revisá tu información:<div class="ci-card">
+        <div class="ci-card-title">📋 Resumen de Check-in</div>
+        <div class="ci-row"><span>Reserva</span><span>${ciData.reservation}</span></div>
+        <div class="ci-row"><span>Nombre</span><span>${ciData.name}</span></div>
+        <div class="ci-row"><span>Documento</span><span>${ciData.doc}</span></div>
+        <div class="ci-row"><span>Fecha Nac.</span><span>${ciData.dob}</span></div>
+        <div class="ci-row"><span>Nacionalidad</span><span>${ciData.nationality}</span></div>
+        <div class="ci-row"><span>Dirección</span><span>${ciData.address}</span></div>
+        <div class="ci-row"><span>Llegada</span><span>${ciData.arrival}</span></div>
+      </div>¿Está todo correcto?`);
+      setSuggestions(['Sí, confirmar check-in ✅', 'No, necesito cambiar algo']);
     }, 1200);
   } else {
     // Next question
@@ -1278,24 +1278,24 @@ function completeCheckIn() {
   setTimeout(() => {
     hideTyping();
     addMessage('agent', `<div class="ci-card">
-      <div class="ci-card-title">✅ Check-in Complete!</div>
-      <div class="ci-row"><span>Guest</span><span>${ciData.name}</span></div>
-      <div class="ci-row"><span>Room</span><span>Superior — Ocean View</span></div>
-      <div class="ci-row"><span>Check-in</span><span>Fri 21 Feb · from ${ciData.arrival}</span></div>
-      <div class="ci-row"><span>Check-out</span><span>Sat 22 Feb · 12:00 PM</span></div>
+      <div class="ci-card-title">✅ Check-in Completo!</div>
+      <div class="ci-row"><span>Huésped</span><span>${ciData.name}</span></div>
+      <div class="ci-row"><span>Habitación</span><span>Deluxe — Vista ciudad</span></div>
+      <div class="ci-row"><span>Check-in</span><span>Vie 21 Feb · desde ${ciData.arrival}</span></div>
+      <div class="ci-row"><span>Check-out</span><span>Sáb 22 Feb · 11:00</span></div>
       <div class="ci-key">
         <div class="key-icon">🔑</div>
         <div>
-          <div class="key-text">Your Digital Room Key</div>
+          <div class="key-text">Tu Llave Digital</div>
           <div class="key-num">${roomKey}</div>
-          <div class="key-text" style="margin-top:2px">Show at reception or use the hotel app</div>
+          <div class="key-text" style="margin-top:2px">Mostrala en recepción o usá la app</div>
         </div>
       </div>
     </div>
-    <br>Welcome to Hotel Miramar, <strong>${ciData.name.split(' ')[0]}</strong>! 🌟 Head straight to your room — no queue needed. See you soon!`);
+    <br>¡Bienvenido/a a Hotel Palermo Soho, <strong>${ciData.name.split(' ')[0]}</strong>! 🌟 Andá directo a tu habitación — sin cola en recepción. ¡Te esperamos!`);
     setTimeout(() => {
-      addMessage('agent', `If you need anything before or during your stay, I'm here 24/7. Is there anything else I can arrange for you?`);
-      setSuggestions(['Pool hours?', 'Can I order dinner?', 'Need a taxi from airport']);
+      addMessage('agent', `Si necesitás algo antes o durante tu estadía, estoy disponible 24/7. ¿Hay algo más que pueda organizar?`);
+      setSuggestions(['Horario de pileta?', 'Puedo pedir cena?', 'Necesito taxi del aeropuerto']);
     }, 1000);
   }, 2000);
 }
@@ -1309,10 +1309,10 @@ function replyWithIntent(intent) {
       setTimeout(() => {
         setSuggestions([
           ...intent.follow,
-          { label: 'Something else', action: () => {
+          { label: 'Otra consulta', action: () => {
             clearSuggestions();
-            addMessage('agent', `Of course! What else can I help you with? 😊`);
-            setSuggestions(['WiFi password?','Pool hours?','Order room service','Need a taxi']);
+            addMessage('agent', `¡Por supuesto! ¿En qué más puedo ayudarte? 😊`);
+            setSuggestions(['Clave de WiFi?','Horario de pileta?','Room service','Necesito un taxi']);
           }}
         ]);
       }, 500);
@@ -1326,16 +1326,16 @@ function initUpselling() {
   const banner = document.createElement('div');
   banner.className = 'revenue-banner';
   banner.innerHTML = `
-    <div class="rev-label">Extra Revenue This Month</div>
+    <div class="rev-label">Revenue Extra Este Mes</div>
     <div class="rev-amt" id="revAmt">$0</div>
-    <div class="rev-sub">from upsell conversions · demo session</div>`;
+    <div class="rev-sub">de conversiones de upselling · sesión demo</div>`;
   ca.appendChild(banner);
 
   setTimeout(() => {
-    addMessage('agent', `🎉 <strong>Booking confirmed, Sarah!</strong> You're all set for Feb 21–22.<br><br>I've selected some <strong>exclusive offers</strong> just for you — available for a limited time:`, '9:41');
-    setTimeout(() => addUpsellCard('upgrade',  '🛏 Room Upgrade',      '+$40/night', 'Upgrade to our Junior Suite — panoramic ocean views, private jacuzzi, butler service. Only 1 suite left tonight!',                      40), 700);
-    setTimeout(() => addUpsellCard('breakfast','🍳 Breakfast Package', '$18/person', 'Start each morning at La Terraza with our award-winning buffet. Artisan coffee, live egg station & freshly baked pastries.', 36), 1200);
-    setTimeout(() => addUpsellCard('checkout', '🕐 Late Checkout',     '$25 total',  'Stay until 2:00 PM instead of noon. Enjoy a slow, relaxed morning without rushing out.',                                    25), 1700);
+    addMessage('agent', `🎉 <strong>¡Reserva confirmada!</strong> Ya estás listo/a para Feb 21–22.<br><br>Seleccioné algunas <strong>ofertas exclusivas</strong> para vos — disponibles por tiempo limitado:`, '9:41');
+    setTimeout(() => addUpsellCard('upgrade',  '🛏 Upgrade de Habitación', '+$80/noche', 'Mejorá a nuestra Deluxe — cama king, minibar, vista a la ciudad. ¡Pocas disponibles!',                      80), 700);
+    setTimeout(() => addUpsellCard('breakfast','🍳 Desayuno Premium',      '$18/persona', 'Empezá cada mañana en Restaurant Nivel 1 con nuestro buffet premium. Jugos naturales, barista en mesa y opciones gourmet.', 36), 1200);
+    setTimeout(() => addUpsellCard('checkout', '🕐 Late Checkout',          '$30 total',  'Quedate hasta las 14:00 en lugar de las 11:00. Disfrutá una mañana relajada sin apuros.',                                    30), 1700);
   }, 300);
 }
 
@@ -1351,8 +1351,8 @@ function addUpsellCard(id, title, badge, desc, amount) {
     <div class="upsell-body">
       <p class="upsell-desc">${desc}</p>
       <div class="upsell-actions" id="ua-${id}">
-        <button class="btn-yes" onclick="acceptUpsell('${id}',${amount})">✓ Yes, add it!</button>
-        <button class="btn-no"  onclick="declineUpsell('${id}')">No thanks</button>
+        <button class="btn-yes" onclick="acceptUpsell('${id}',${amount})">✓ Sí, agregalo!</button>
+        <button class="btn-no"  onclick="declineUpsell('${id}')">No, gracias</button>
       </div>
     </div>`;
   ca.appendChild(card); scrollDown();
@@ -1361,15 +1361,15 @@ function addUpsellCard(id, title, badge, desc, amount) {
 function acceptUpsell(id, amount) {
   const actions = document.getElementById('ua-' + id);
   const card    = document.getElementById('uc-' + id);
-  actions.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#059669;font-weight:600;font-size:13px;padding:6px">✅ Added to your stay!</div>`;
+  actions.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#059669;font-weight:600;font-size:13px;padding:6px">✅ ¡Agregado a tu estadía!</div>`;
   card.style.borderColor = '#059669';
   revenue += amount;
   const el = document.getElementById('revAmt');
   if (el) { el.textContent = '$' + revenue; el.style.transform = 'scale(1.25)'; setTimeout(()=>el.style.transform='',250); }
   const msgs = {
-    upgrade:   `🛏 Suite upgrade confirmed! A bottle of champagne will be waiting on arrival. Can't wait to see your face when you see the view! 🥂`,
-    breakfast: `🍳 Breakfast for 2 added! See you at La Terraza tomorrow morning. Chef's pick: eggs benedict with smoked salmon 😋`,
-    checkout:  `🕐 Late checkout until 2 PM confirmed! I've updated your reservation. Enjoy your extra morning 😊`,
+    upgrade:   `🛏 ¡Upgrade a Deluxe confirmado! Una botella de espumante te va a estar esperando. ¡No sabés la vista que te espera! 🥂`,
+    breakfast: `🍳 ¡Desayuno premium agregado! Nos vemos mañana en Restaurant Nivel 1. Recomendación del chef: huevos benedictinos con salmón ahumado 😋`,
+    checkout:  `🕐 ¡Late checkout hasta las 14:00 confirmado! Ya actualicé tu reserva. Disfrutá tu mañana extra 😊`,
   };
   setTimeout(() => addMessage('agent', msgs[id]), 450);
 }
@@ -1377,7 +1377,7 @@ function acceptUpsell(id, amount) {
 function declineUpsell(id) {
   const actions = document.getElementById('ua-' + id);
   const card    = document.getElementById('uc-' + id);
-  actions.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#666666;font-size:12px;padding:6px">No problem — offer declined.</div>`;
+  actions.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#666666;font-size:12px;padding:6px">Sin problema — oferta declinada.</div>`;
   card.style.opacity = '0.5';
 }
 
@@ -1385,19 +1385,19 @@ function handleUpsellingMsg(text) {
   showTyping();
   setTimeout(() => {
     hideTyping();
-    addMessage('agent', `Thanks for your message! Would you like to know more about any of our offers? I'm happy to help 😊`);
+    addMessage('agent', `¡Gracias por tu mensaje! ¿Querés saber más sobre alguna de nuestras ofertas? Con gusto te cuento 😊`);
   }, 1100);
 }
 
 // ── ROI CALCULATOR ──
 function updateROI() {
   rooms = parseInt(document.getElementById('roomsSlider').value);
-  document.getElementById('roomsValue').textContent = rooms + ' rooms';
+  document.getElementById('roomsValue').textContent = rooms + ' habitaciones';
   const hrs = Math.round(rooms * 0.56);
   const rev = Math.round(rooms * 110);
   document.getElementById('hoursValue').innerHTML    = hrs + '<span class="roi-unit"> hrs</span>';
   document.getElementById('revenueValue').textContent = '$' + rev.toLocaleString();
-  document.getElementById('totalValue').textContent   = '$' + rev.toLocaleString() + '/mo';
+  document.getElementById('totalValue').textContent   = '$' + rev.toLocaleString() + '/mes';
 }
 
 // ── INPUT EVENTS ──

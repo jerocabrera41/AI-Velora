@@ -11,6 +11,7 @@ class Intent(str, Enum):
     AMENITIES_QUERY = "amenities_query"
     SERVICE_REQUEST = "service_request"
     FAQ_GENERAL = "faq_general"
+    UPSELLING = "upselling"
     GREETING = "greeting"
     OUT_OF_SCOPE = "out_of_scope"
 
@@ -45,6 +46,11 @@ INTENT_KEYWORDS: dict[Intent, list[str]] = {
         "aeropuerto", "airport", "taxi", "transfer", "mascota", "pet",
         "lavanderia", "laundry", "caja fuerte", "safe",
         "como llego", "direccion", "donde queda",
+    ],
+    Intent.UPSELLING: [
+        "upgrade", "mejorar habitacion", "mejorar mi habitacion",
+        "oferta", "promocion", "desayuno premium",
+        "algo mejor", "algo especial", "mejora",
     ],
 }
 
