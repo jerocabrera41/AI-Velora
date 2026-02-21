@@ -7,6 +7,7 @@ from loguru import logger
 
 class Intent(str, Enum):
     BOOKING_INFO = "booking_info"
+    NEW_BOOKING = "new_booking"
     AMENITIES_QUERY = "amenities_query"
     SERVICE_REQUEST = "service_request"
     FAQ_GENERAL = "faq_general"
@@ -24,6 +25,11 @@ INTENT_KEYWORDS: dict[Intent, list[str]] = {
         "reserva", "check-in", "checkin", "check-out", "checkout",
         "confirmacion", "habitacion", "room", "fecha", "noche",
         "llegada", "salida", "booking", "reservation",
+    ],
+    Intent.NEW_BOOKING: [
+        "reservar", "disponibilidad", "precio", "cuanto cuesta",
+        "cuanto sale", "quiero reservar", "hacer una reserva",
+        "nueva reserva", "disponible", "tarifas", "cotizar",
     ],
     Intent.AMENITIES_QUERY: [
         "wifi", "internet", "desayuno", "breakfast", "piscina", "pileta",

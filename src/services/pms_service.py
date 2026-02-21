@@ -4,13 +4,13 @@ Simulates a Cloudbeds-like PMS by querying the local SQLite database.
 """
 
 import uuid
-from datetime import date
+from datetime import date, datetime
 
-from sqlalchemy import select
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from src.database.models import Booking, Hotel, ServiceRequest
+from src.database.models import Booking, BookingStatus, Hotel, RoomType, ServiceRequest
 
 
 class PMSService:
@@ -135,6 +135,163 @@ class PMSService:
             "details": service_request.details,
             "status": service_request.status,
             "created_at": service_request.created_at.isoformat(),
+        }
+
+    async def get_room_types(self, hotel_id: uuid.UUID) -> list[dict]:
+        """Get all room types for a hotel."""
+        logger.info(f"PMS lookup: room_types for hotel_id={hotel_id}")
+
+        result = await self.session.execute(
+            select(RoomType).where(RoomType.hotel_id == hotel_id)
+        )
+        room_types = result.scalars().all()
+
+        return [
+            {
+                "id": str(rt.id),
+                "name": rt.name,
+                "description": rt.description,
+                "price_per_night": rt.price_per_night,
+                "max_guests": rt.max_guests,
+                "total_rooms": rt.total_rooms,
+            }
+            for rt in room_types
+        ]
+
+    async def check_availability(
+        self,
+        hotel_id: uuid.UUID,
+        checkin: str,
+        checkout: str,
+        num_guests: int,
+    ) -> list[dict]:
+        """Check room availability for the given dates and guest count.
+
+        For each room type that fits the guest count, counts overlapping
+        bookings per night and returns the minimum available rooms.
+        """
+        logger.info(
+            f"Checking availability: hotel={hotel_id}, "
+            f"checkin={checkin}, checkout={checkout}, guests={num_guests}"
+        )
+
+        # Get room types that can accommodate the guests
+        result = await self.session.execute(
+            select(RoomType).where(
+                and_(
+                    RoomType.hotel_id == hotel_id,
+                    RoomType.max_guests >= num_guests,
+                )
+            )
+        )
+        room_types = result.scalars().all()
+
+        available = []
+        for rt in room_types:
+            # Count overlapping bookings (active ones only) for this room type
+            result = await self.session.execute(
+                select(func.count(Booking.id)).where(
+                    and_(
+                        Booking.hotel_id == hotel_id,
+                        Booking.room_type == rt.name,
+                        Booking.status.in_([
+                            BookingStatus.CONFIRMED,
+                            BookingStatus.CHECKED_IN,
+                        ]),
+                        Booking.checkin_date < checkout,
+                        Booking.checkout_date > checkin,
+                    )
+                )
+            )
+            booked_count = result.scalar() or 0
+            rooms_available = rt.total_rooms - booked_count
+
+            if rooms_available > 0:
+                # Calculate total nights and price
+                checkin_date = date.fromisoformat(checkin)
+                checkout_date = date.fromisoformat(checkout)
+                nights = (checkout_date - checkin_date).days
+
+                available.append({
+                    "room_type_id": str(rt.id),
+                    "name": rt.name,
+                    "description": rt.description,
+                    "price_per_night": rt.price_per_night,
+                    "total_price": rt.price_per_night * nights,
+                    "nights": nights,
+                    "max_guests": rt.max_guests,
+                    "rooms_available": rooms_available,
+                })
+
+        logger.info(f"Availability result: {len(available)} room types available")
+        return available
+
+    async def create_booking(
+        self,
+        hotel_id: uuid.UUID,
+        guest_name: str,
+        guest_phone: str,
+        guest_email: str | None,
+        checkin_date: str,
+        checkout_date: str,
+        room_type: str,
+        num_guests: int,
+        special_requests: str | None = None,
+    ) -> dict:
+        """Create a new booking after verifying availability.
+
+        Returns the created booking dict or an error dict.
+        """
+        logger.info(
+            f"Creating booking: hotel={hotel_id}, guest={guest_name}, "
+            f"room={room_type}, {checkin_date} to {checkout_date}"
+        )
+
+        # Verify availability first
+        available = await self.check_availability(
+            hotel_id, checkin_date, checkout_date, num_guests
+        )
+        room_available = next(
+            (r for r in available if r["name"] == room_type), None
+        )
+
+        if room_available is None:
+            logger.warning(f"No availability for {room_type} on requested dates")
+            return {
+                "success": False,
+                "error": f"No hay disponibilidad para {room_type} en las fechas solicitadas.",
+            }
+
+        # Generate confirmation number
+        count_result = await self.session.execute(
+            select(func.count(Booking.id)).where(Booking.hotel_id == hotel_id)
+        )
+        total_bookings = count_result.scalar() or 0
+        confirmation_number = f"PLR-2025-{total_bookings + 1:03d}"
+
+        booking = Booking(
+            hotel_id=hotel_id,
+            confirmation_number=confirmation_number,
+            guest_name=guest_name,
+            guest_phone=guest_phone,
+            guest_email=guest_email,
+            checkin_date=checkin_date,
+            checkout_date=checkout_date,
+            room_type=room_type,
+            num_guests=num_guests,
+            special_requests=special_requests,
+            status=BookingStatus.CONFIRMED,
+        )
+        self.session.add(booking)
+        await self.session.commit()
+        await self.session.refresh(booking)
+
+        logger.info(f"Booking created: {confirmation_number}")
+        return {
+            "success": True,
+            "booking": self._booking_to_dict(booking),
+            "total_price": room_available["total_price"],
+            "nights": room_available["nights"],
         }
 
     async def get_default_hotel(self) -> dict | None:

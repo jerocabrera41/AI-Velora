@@ -39,6 +39,18 @@ class TestClassifyIntentFallback:
     def test_faq_pets(self):
         assert classify_intent_fallback("Aceptan mascotas?") == Intent.FAQ_GENERAL
 
+    def test_new_booking_reservar(self):
+        assert classify_intent_fallback("Quiero reservar, hay disponibilidad?") == Intent.NEW_BOOKING
+
+    def test_new_booking_disponibilidad(self):
+        assert classify_intent_fallback("Hay disponibilidad para el proximo fin de semana?") == Intent.NEW_BOOKING
+
+    def test_new_booking_precio(self):
+        assert classify_intent_fallback("Cuanto cuesta una standard?") == Intent.NEW_BOOKING
+
+    def test_new_booking_tarifas(self):
+        assert classify_intent_fallback("Me pasan las tarifas?") == Intent.NEW_BOOKING
+
     def test_out_of_scope(self):
         assert classify_intent_fallback("Cual es el sentido de la vida?") == Intent.OUT_OF_SCOPE
 
@@ -52,6 +64,9 @@ class TestParseLlmIntent:
 
     def test_partial_match(self):
         assert parse_llm_intent("greeting response") == Intent.GREETING
+
+    def test_new_booking(self):
+        assert parse_llm_intent("new_booking") == Intent.NEW_BOOKING
 
     def test_invalid_returns_out_of_scope(self):
         assert parse_llm_intent("completely_invalid_thing") == Intent.OUT_OF_SCOPE

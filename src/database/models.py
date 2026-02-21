@@ -6,6 +6,7 @@ from sqlalchemy import (
     JSON,
     DateTime,
     Enum,
+    Float,
     ForeignKey,
     Integer,
     String,
@@ -68,10 +69,32 @@ class Hotel(Base):
     address: Mapped[str] = mapped_column(String(500), nullable=True)
 
     bookings: Mapped[list["Booking"]] = relationship(back_populates="hotel")
+    room_types: Mapped[list["RoomType"]] = relationship(back_populates="hotel")
     conversations: Mapped[list["Conversation"]] = relationship(back_populates="hotel")
 
     def __repr__(self) -> str:
         return f"<Hotel {self.name}>"
+
+
+class RoomType(Base):
+    __tablename__ = "room_types"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, default=uuid.uuid4
+    )
+    hotel_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("hotels.id"), nullable=False
+    )
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    price_per_night: Mapped[float] = mapped_column(Float, nullable=False)
+    max_guests: Mapped[int] = mapped_column(Integer, nullable=False)
+    total_rooms: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    hotel: Mapped["Hotel"] = relationship(back_populates="room_types")
+
+    def __repr__(self) -> str:
+        return f"<RoomType {self.name} - ${self.price_per_night}/noche>"
 
 
 class Booking(Base):

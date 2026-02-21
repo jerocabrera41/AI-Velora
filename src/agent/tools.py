@@ -139,6 +139,85 @@ class AgentTools:
             logger.error(f"Failed to create service request: {e}")
             return {"success": False, "error": str(e)}
 
+    async def get_room_types(self) -> dict[str, Any]:
+        """Get all room types with prices and capacity.
+
+        Returns:
+            List of room types with details.
+        """
+        logger.info("Tool call: get_room_types()")
+        room_types = await self.pms.get_room_types(self.hotel_id)
+        if not room_types:
+            return {"error": "No se encontraron tipos de habitacion"}
+        return {"room_types": room_types}
+
+    async def check_availability(
+        self, checkin: str, checkout: str, num_guests: int
+    ) -> dict[str, Any]:
+        """Check room availability for given dates and guest count.
+
+        Args:
+            checkin: Check-in date (YYYY-MM-DD).
+            checkout: Check-out date (YYYY-MM-DD).
+            num_guests: Number of guests.
+
+        Returns:
+            Available room types with prices.
+        """
+        logger.info(f"Tool call: check_availability({checkin}, {checkout}, {num_guests})")
+        available = await self.pms.check_availability(
+            self.hotel_id, checkin, checkout, num_guests
+        )
+        if not available:
+            return {
+                "available": False,
+                "message": "No hay habitaciones disponibles para las fechas y cantidad de huespedes indicados.",
+            }
+        return {"available": True, "rooms": available}
+
+    async def create_booking(
+        self,
+        guest_name: str,
+        guest_phone: str,
+        guest_email: str | None,
+        checkin_date: str,
+        checkout_date: str,
+        room_type: str,
+        num_guests: int,
+        special_requests: str | None = None,
+    ) -> dict[str, Any]:
+        """Create a new booking.
+
+        Args:
+            guest_name: Full name of the guest.
+            guest_phone: Guest phone number.
+            guest_email: Guest email (optional).
+            checkin_date: Check-in date (YYYY-MM-DD).
+            checkout_date: Check-out date (YYYY-MM-DD).
+            room_type: Room type name (Standard, Deluxe, Suite).
+            num_guests: Number of guests.
+            special_requests: Special requests (optional).
+
+        Returns:
+            Created booking details or error.
+        """
+        logger.info(
+            f"Tool call: create_booking({guest_name}, {room_type}, "
+            f"{checkin_date}-{checkout_date})"
+        )
+        result = await self.pms.create_booking(
+            hotel_id=self.hotel_id,
+            guest_name=guest_name,
+            guest_phone=guest_phone,
+            guest_email=guest_email,
+            checkin_date=checkin_date,
+            checkout_date=checkout_date,
+            room_type=room_type,
+            num_guests=num_guests,
+            special_requests=special_requests,
+        )
+        return result
+
     async def escalate_to_human(
         self, conversation_id: str, reason: str
     ) -> dict[str, Any]:
@@ -267,6 +346,91 @@ TOOL_DEFINITIONS = [
                 },
             },
             "required": ["booking_id", "request_type", "details"],
+        },
+    },
+    {
+        "name": "get_room_types",
+        "description": (
+            "Obtiene los tipos de habitacion disponibles con precios y capacidad. "
+            "Usalo cuando el huesped pregunte por precios, tipos de habitacion o quiera reservar."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {},
+        },
+    },
+    {
+        "name": "check_availability",
+        "description": (
+            "Verifica la disponibilidad de habitaciones para fechas y cantidad de huespedes. "
+            "Usalo cuando el huesped quiera saber si hay disponibilidad o quiera reservar."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "checkin": {
+                    "type": "string",
+                    "description": "Fecha de check-in en formato YYYY-MM-DD",
+                },
+                "checkout": {
+                    "type": "string",
+                    "description": "Fecha de check-out en formato YYYY-MM-DD",
+                },
+                "num_guests": {
+                    "type": "integer",
+                    "description": "Cantidad de huespedes",
+                },
+            },
+            "required": ["checkin", "checkout", "num_guests"],
+        },
+    },
+    {
+        "name": "create_booking",
+        "description": (
+            "Crea una nueva reserva para el huesped. "
+            "Usalo cuando el huesped confirme que quiere realizar la reserva, "
+            "despues de verificar disponibilidad."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "guest_name": {
+                    "type": "string",
+                    "description": "Nombre completo del huesped",
+                },
+                "guest_phone": {
+                    "type": "string",
+                    "description": "Numero de telefono del huesped",
+                },
+                "guest_email": {
+                    "type": "string",
+                    "description": "Email del huesped (opcional)",
+                },
+                "checkin_date": {
+                    "type": "string",
+                    "description": "Fecha de check-in en formato YYYY-MM-DD",
+                },
+                "checkout_date": {
+                    "type": "string",
+                    "description": "Fecha de check-out en formato YYYY-MM-DD",
+                },
+                "room_type": {
+                    "type": "string",
+                    "description": "Tipo de habitacion (Standard, Deluxe, Suite)",
+                },
+                "num_guests": {
+                    "type": "integer",
+                    "description": "Cantidad de huespedes",
+                },
+                "special_requests": {
+                    "type": "string",
+                    "description": "Pedidos especiales (opcional)",
+                },
+            },
+            "required": [
+                "guest_name", "guest_phone", "checkin_date",
+                "checkout_date", "room_type", "num_guests",
+            ],
         },
     },
     {

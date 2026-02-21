@@ -70,6 +70,7 @@ class HotelAgent:
         graph.add_node("classify_intent", self._classify_intent)
         graph.add_node("handle_greeting", self._handle_greeting)
         graph.add_node("handle_booking", self._handle_booking)
+        graph.add_node("handle_new_booking", self._handle_new_booking)
         graph.add_node("handle_amenities", self._handle_amenities)
         graph.add_node("handle_service_request", self._handle_service_request)
         graph.add_node("handle_faq", self._handle_faq)
@@ -89,6 +90,7 @@ class HotelAgent:
             {
                 "greeting": "handle_greeting",
                 "booking_info": "handle_booking",
+                "new_booking": "handle_new_booking",
                 "amenities_query": "handle_amenities",
                 "service_request": "handle_service_request",
                 "faq_general": "handle_faq",
@@ -99,6 +101,7 @@ class HotelAgent:
         # All handlers lead to generate_response
         graph.add_edge("handle_greeting", "generate_response")
         graph.add_edge("handle_booking", "generate_response")
+        graph.add_edge("handle_new_booking", "generate_response")
         graph.add_edge("handle_amenities", "generate_response")
         graph.add_edge("handle_service_request", "generate_response")
         graph.add_edge("handle_faq", "generate_response")
@@ -186,6 +189,11 @@ class HotelAgent:
         """Handle booking-related queries using the LLM with tools."""
         logger.info("Handling booking_info intent")
         return await self._llm_with_tools(state, "booking_info")
+
+    async def _handle_new_booking(self, state: AgentState) -> dict:
+        """Handle new booking requests (availability, prices, reservations)."""
+        logger.info("Handling new_booking intent")
+        return await self._llm_with_tools(state, "new_booking")
 
     async def _handle_amenities(self, state: AgentState) -> dict:
         """Handle amenity queries using the LLM with tools."""
@@ -325,6 +333,7 @@ class HotelAgent:
             # Fallback response
             fallback_responses = {
                 "booking_info": "Disculpa, no pude acceder a la informacion de tu reserva en este momento. Te recomiendo contactar a recepcion al +54 11 4833-1234.",
+                "new_booking": "Disculpa, no pude procesar tu consulta de disponibilidad en este momento. Para reservar, contacta a recepcion al +54 11 4833-1234.",
                 "amenities_query": "Disculpa, no pude obtener la informacion en este momento. Podes consultar en recepcion o llamar al +54 11 4833-1234.",
                 "service_request": "Disculpa, no pude procesar tu pedido automaticamente. Por favor comunicate con recepcion al +54 11 4833-1234.",
                 "faq_general": "Disculpa, no puedo responder tu consulta en este momento. Te recomiendo contactar a recepcion al +54 11 4833-1234.",
@@ -358,6 +367,22 @@ class HotelAgent:
             "get_hotel_amenities": lambda: self.tools.get_hotel_amenities(),
             "get_hotel_policies": lambda: self.tools.get_hotel_policies(),
             "search_faq": lambda: self.tools.search_faq(tool_input["query"]),
+            "get_room_types": lambda: self.tools.get_room_types(),
+            "check_availability": lambda: self.tools.check_availability(
+                tool_input["checkin"],
+                tool_input["checkout"],
+                tool_input["num_guests"],
+            ),
+            "create_booking": lambda: self.tools.create_booking(
+                guest_name=tool_input["guest_name"],
+                guest_phone=tool_input["guest_phone"],
+                guest_email=tool_input.get("guest_email"),
+                checkin_date=tool_input["checkin_date"],
+                checkout_date=tool_input["checkout_date"],
+                room_type=tool_input["room_type"],
+                num_guests=tool_input["num_guests"],
+                special_requests=tool_input.get("special_requests"),
+            ),
             "create_service_request": lambda: self.tools.create_service_request(
                 tool_input["booking_id"],
                 tool_input["request_type"],

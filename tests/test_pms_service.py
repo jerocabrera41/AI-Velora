@@ -1,5 +1,7 @@
 """Tests for the PMS service."""
 
+from datetime import date, timedelta
+
 import pytest
 import pytest_asyncio
 
@@ -68,3 +70,97 @@ async def test_create_service_request(pms):
     )
     assert result["status"] == "pending"
     assert result["request_type"] == "towels"
+
+
+@pytest.mark.asyncio
+async def test_get_room_types(pms):
+    """Verify room types are returned for the hotel."""
+    result = await pms.get_room_types(HOTEL_ID)
+    assert len(result) == 3
+    names = {rt["name"] for rt in result}
+    assert names == {"Standard", "Deluxe", "Suite"}
+    standard = next(rt for rt in result if rt["name"] == "Standard")
+    assert standard["price_per_night"] == 120.0
+    assert standard["max_guests"] == 2
+    assert standard["total_rooms"] == 10
+
+
+@pytest.mark.asyncio
+async def test_check_availability(pms):
+    """Verify availability check returns available rooms."""
+    # Use future dates to avoid overlap with seeded bookings
+    future = date.today() + timedelta(days=60)
+    checkin = future.isoformat()
+    checkout = (future + timedelta(days=3)).isoformat()
+
+    result = await pms.check_availability(HOTEL_ID, checkin, checkout, num_guests=2)
+    assert len(result) > 0
+    # All 3 types should accommodate 2 guests
+    names = {r["name"] for r in result}
+    assert "Standard" in names
+    assert "Deluxe" in names
+    assert "Suite" in names
+    # Verify price calculation
+    standard = next(r for r in result if r["name"] == "Standard")
+    assert standard["nights"] == 3
+    assert standard["total_price"] == 120.0 * 3
+
+
+@pytest.mark.asyncio
+async def test_check_availability_filters_by_guests(pms):
+    """Verify availability filters out room types with insufficient capacity."""
+    future = date.today() + timedelta(days=60)
+    checkin = future.isoformat()
+    checkout = (future + timedelta(days=2)).isoformat()
+
+    # 4 guests: only Suite (max 4) should be available
+    result = await pms.check_availability(HOTEL_ID, checkin, checkout, num_guests=4)
+    assert len(result) == 1
+    assert result[0]["name"] == "Suite"
+
+
+@pytest.mark.asyncio
+async def test_create_booking(pms):
+    """Verify a new booking can be created."""
+    future = date.today() + timedelta(days=90)
+    checkin = future.isoformat()
+    checkout = (future + timedelta(days=2)).isoformat()
+
+    result = await pms.create_booking(
+        hotel_id=HOTEL_ID,
+        guest_name="Test Guest",
+        guest_phone="+5491100001111",
+        guest_email="test@example.com",
+        checkin_date=checkin,
+        checkout_date=checkout,
+        room_type="Standard",
+        num_guests=2,
+    )
+    assert result["success"] is True
+    assert result["booking"]["guest_name"] == "Test Guest"
+    assert result["booking"]["room_type"] == "Standard"
+    assert result["booking"]["confirmation_number"].startswith("PLR-2025-")
+    assert result["nights"] == 2
+    assert result["total_price"] == 240.0
+
+
+@pytest.mark.asyncio
+async def test_create_booking_no_availability(pms):
+    """Verify booking creation fails when no rooms available."""
+    future = date.today() + timedelta(days=90)
+    checkin = future.isoformat()
+    checkout = (future + timedelta(days=2)).isoformat()
+
+    # 5 guests: no room type supports this
+    result = await pms.create_booking(
+        hotel_id=HOTEL_ID,
+        guest_name="Too Many Guests",
+        guest_phone="+5491100009999",
+        guest_email=None,
+        checkin_date=checkin,
+        checkout_date=checkout,
+        room_type="Standard",
+        num_guests=5,
+    )
+    assert result["success"] is False
+    assert "error" in result

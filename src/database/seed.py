@@ -7,13 +7,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from loguru import logger
 
-from src.database.models import Booking, BookingStatus, Hotel
+from src.database.models import Booking, BookingStatus, Hotel, RoomType
 
 # Fixed UUIDs for reproducibility
 HOTEL_ID = uuid.UUID("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
 BOOKING_1_ID = uuid.UUID("b1000001-0000-0000-0000-000000000001")
 BOOKING_2_ID = uuid.UUID("b1000002-0000-0000-0000-000000000002")
 BOOKING_3_ID = uuid.UUID("b1000003-0000-0000-0000-000000000003")
+ROOM_TYPE_STANDARD_ID = uuid.UUID("c1000001-0000-0000-0000-000000000001")
+ROOM_TYPE_DELUXE_ID = uuid.UUID("c1000002-0000-0000-0000-000000000002")
+ROOM_TYPE_SUITE_ID = uuid.UUID("c1000003-0000-0000-0000-000000000003")
 
 
 def get_hotel_data() -> dict:
@@ -123,6 +126,38 @@ def get_hotel_data() -> dict:
     }
 
 
+def get_room_types_data() -> list[dict]:
+    return [
+        {
+            "id": ROOM_TYPE_STANDARD_ID,
+            "hotel_id": HOTEL_ID,
+            "name": "Standard",
+            "description": "Habitacion confortable con cama doble, bano privado, TV y escritorio de trabajo.",
+            "price_per_night": 120.0,
+            "max_guests": 2,
+            "total_rooms": 10,
+        },
+        {
+            "id": ROOM_TYPE_DELUXE_ID,
+            "hotel_id": HOTEL_ID,
+            "name": "Deluxe",
+            "description": "Habitacion superior con cama king, sala de estar, minibar y vista a la ciudad.",
+            "price_per_night": 200.0,
+            "max_guests": 3,
+            "total_rooms": 6,
+        },
+        {
+            "id": ROOM_TYPE_SUITE_ID,
+            "hotel_id": HOTEL_ID,
+            "name": "Suite",
+            "description": "Suite premium con sala independiente, jacuzzi privado, terraza y servicio VIP.",
+            "price_per_night": 350.0,
+            "max_guests": 4,
+            "total_rooms": 3,
+        },
+    ]
+
+
 def get_bookings_data() -> list[dict]:
     today = date.today()
     return [
@@ -184,12 +219,16 @@ async def seed_database(session: AsyncSession) -> None:
     hotel = Hotel(**get_hotel_data())
     session.add(hotel)
 
+    for room_type_data in get_room_types_data():
+        session.add(RoomType(**room_type_data))
+
     for booking_data in get_bookings_data():
         booking = Booking(**booking_data)
         session.add(booking)
 
     await session.commit()
     logger.info(
-        "Seeded: 1 hotel (Hotel Palermo Soho) + 3 bookings "
+        "Seeded: 1 hotel (Hotel Palermo Soho) + 3 room types "
+        "(Standard, Deluxe, Suite) + 3 bookings "
         "(Juan Perez, Maria Gonzalez, Carlos Rodriguez)"
     )
