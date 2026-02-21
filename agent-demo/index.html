@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotel Miramar — AI Agents</title>
+  <style>
+    :root {
+      --navy:    #4401ff;
+      --navy2:   #6630ff;
+      --gold:    #C9A227;
+      --cream:   #F5F3FF;
+      --wa-bg:   #EBEBEB;
+      --wa-sent: #E0D4FF;
+      --wa-recv: #FFFFFF;
+      --wa-hdr:  #4401ff;
+      --wa-tabs: #6630ff;
+      --wa-grn:  #4401ff;
+      --wa-send: #4401ff;
+      --wa-blue: #4401ff;
+      --text:    #111B21;
+      --muted:   #666666;
+      --shadow:  0 28px 80px rgba(68,1,255,.22);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      text-align: center;
+      background: var(--navy);
+      padding: 32px 20px 52px;
+      clip-path: ellipse(120% 100% at 50% 0%);
+      margin-bottom: -24px;
+    }
+    .page-header .eyebrow { font-size:10px; letter-spacing:3.5px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+    .page-header h1 { font-size:26px; font-weight:700; color:#fff; line-height:1.25; }
+    .page-header p  { font-size:13px; color:rgba(255,255,255,.5); margin-top:6px; }
+
+    /* ── LAYOUT ── */
+    .demo-layout {
+      display: grid;
+      grid-template-columns: 255px 390px 255px;
+      gap: 20px;
+      max-width: 970px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+      align-items: start;
+    }
+    @media(max-width:920px) {
+      .demo-layout { grid-template-columns:1fr; justify-items:center; }
+      .side-panel { display:none!important; }
+    }
+
+    /* ── PHONE FRAME ── */
+    .phone {
+      width: 390px; height: 780px;
+      background: #111B21;
+      border-radius: 44px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    /* Status bar */
+    .status-bar {
+      background: var(--wa-hdr);
+      padding: 10px 22px 6px;
+      display: flex; justify-content:space-between; align-items:center;
+      flex-shrink: 0;
+    }
+    .sb-time  { color:#fff; font-size:13px; font-weight:600; }
+    .sb-icons { color:#fff; font-size:11px; display:flex; gap:5px; align-items:center; }
+
+    /* WhatsApp-style header */
+    .wa-header {
+      background: var(--wa-hdr);
+      padding: 8px 12px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .wa-back { color:rgba(255,255,255,.85); font-size:20px; cursor:pointer; flex-shrink:0; }
+    .wa-av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #a67c00);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 19px; flex-shrink:0; cursor:pointer;
+    }
+    .wa-info { flex:1; min-width:0; }
+    .wa-name { color:#fff; font-size:15px; font-weight:600; line-height:1.2; }
+    .wa-sub  { font-size:12px; color:rgba(255,255,255,.7); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .wa-actions { display:flex; gap:18px; align-items:center; color:rgba(255,255,255,.85); font-size:20px; }
+    .wa-actions span { cursor:pointer; }
+
+    /* Tabs */
+    .wa-tabs {
+      background: var(--wa-tabs);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      padding: 10px 2px 9px;
+      text-align: center;
+      font-size: 10.5px; font-weight: 500;
+      color: rgba(255,255,255,.6);
+      cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      text-transform: uppercase; letter-spacing:.5px;
+      line-height: 1.35; user-select: none;
+      transition: all .18s;
+    }
+    .tab-btn.active { color:#fff; border-bottom-color:#fff; }
+    .tab-btn:not(.active):hover { background: rgba(255,255,255,.08); }
+
+    /* ── CHAT AREA ── */
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 8px 6px;
+      background: var(--wa-bg);
+      /* WhatsApp wallpaper subtle texture */
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(0,0,0,.04) 1px, transparent 0);
+      background-size: 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .chat-area::-webkit-scrollbar { width:3px; }
+    .chat-area::-webkit-scrollbar-thumb { background:rgba(0,0,0,.2); border-radius:2px; }
+
+    /* Date chip */
+    .date-chip { text-align:center; margin:6px 0; }
+    .date-chip span {
+      background: #e1f2fb;
+      color: #54656F;
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 7px;
+      box-shadow: 0 1px 1px rgba(0,0,0,.06);
+    }
+
+    /* ── BUBBLES ── */
+    .msg-row { display:flex; margin: 1px 4px; }
+    .msg-row.agent { justify-content:flex-start; }
+    .msg-row.user  { justify-content:flex-end; }
+
+    .msg-bubble {
+      position: relative;
+      max-width: 82%;
+      padding: 6px 10px 4px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--text);
+      word-break: break-word;
+      box-shadow: 0 1px 1px rgba(0,0,0,.13);
+    }
+
+    /* Received (agent) */
+    .msg-row.agent .msg-bubble {
+      background: var(--wa-recv);
+      border-radius: 0px 8px 8px 8px;
+    }
+    .msg-row.agent .msg-bubble::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -8px;
+      width: 8px; height: 13px;
+      background: var(--wa-recv);
+      clip-path: polygon(100% 0, 100% 100%, 0 0);
+    }
+
+    /* Sent (user) */
+    .msg-row.user .msg-bubble {
+      background: var(--wa-sent);
+      border-radius: 8px 0px 8px 8px;
+    }
+    .msg-row.user .msg-bubble::before {
+      content: '';
+      position: absolute;
+      top: 0; right: -8px;
+      width: 8px; height: 13px;
+      background: var(--wa-sent);
+      clip-path: polygon(0 0, 0 100%, 100% 0);
+    }
+
+    /* Timestamp + ticks inside bubble */
+    .bubble-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      float: right;
+      margin-left: 8px;
+      margin-top: 2px;
+      position: relative;
+      bottom: -2px;
+    }
+    .btime  { font-size: 11px; color: var(--muted); }
+    .bticks { font-size: 12px; color: var(--wa-blue); line-height: 1; }
+
+    /* Typing indicator */
+    .typing-row { display:flex; margin: 1px 4px; }
+    .typing-bub {
+      background: var(--wa-recv);
+      border-radius: 0px 8px 8px 8px;
+      padding: 10px 14px;
+      display: flex; gap: 4px; align-items: center;
+      box-shadow: 0 1px 1px rgba(0,0,0,.13);
+      position: relative;
+    }
+    .typing-bub::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -8px;
+      width: 8px; height: 13px;
+      background: var(--wa-recv);
+      clip-path: polygon(100% 0, 100% 100%, 0 0);
+    }
+    .td { width:8px; height:8px; border-radius:50%; background:#666666; animation:bounce 1.4s infinite ease-in-out; }
+    .td:nth-child(2) { animation-delay:.2s; }
+    .td:nth-child(3) { animation-delay:.4s; }
+
+    /* ── INLINE CARDS ── */
+    /* Room cards */
+    .room-opts { display:flex; flex-direction:column; gap:5px; margin-top:8px; }
+    .room-opt { background:#f0f0f0; border-radius:8px; overflow:hidden; border:1px solid rgba(0,0,0,.08); }
+    .room-opt-h { background:#4401ff; padding:6px 10px; display:flex; justify-content:space-between; align-items:center; }
+    .room-opt-h .rn { color:#fff; font-size:12.5px; font-weight:600; }
+    .room-opt-h .rp { color:var(--gold); font-size:13px; font-weight:700; }
+    .room-opt-b { padding:6px 10px; display:flex; gap:4px; flex-wrap:wrap; }
+    .rtag { background:#fff; padding:2px 7px; border-radius:6px; font-size:11px; color:#333; border:1px solid rgba(0,0,0,.06); }
+
+    /* Confirmation card */
+    .conf-card { background:linear-gradient(135deg,#059669,#047857); border-radius:10px; padding:12px; color:#fff; margin-top:6px; }
+    .conf-title { font-size:13.5px; font-weight:700; margin-bottom:9px; display:flex; align-items:center; gap:5px; }
+    .conf-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px; opacity:.9; }
+    .conf-num { background:rgba(255,255,255,.2); border-radius:7px; padding:7px 10px; text-align:center; font-size:15px; font-weight:700; letter-spacing:2px; margin-top:9px; }
+
+    /* Reception topics */
+    .topics-area { display:flex; flex-direction:column; gap:4px; margin-top:6px; }
+    .q-topic {
+      background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:8px;
+      padding:8px 12px; display:flex; align-items:center; gap:9px;
+      cursor:pointer; transition:all .15s; font-size:13px; color:var(--text);
+      box-shadow:0 1px 1px rgba(0,0,0,.06);
+    }
+    .q-topic:hover { background:#f0fdf4; border-color:var(--wa-grn); }
+    .q-topic .qi { font-size:17px; width:22px; text-align:center; flex-shrink:0; }
+
+    /* Upsell */
+    .revenue-banner {
+      background: linear-gradient(135deg, #4401ff, #6630ff);
+      margin: -8px -8px 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .rev-label { font-size:10px; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,.55); margin-bottom:3px; }
+    .rev-amt   { font-size:30px; font-weight:700; color:#7c3aff; font-variant-numeric:tabular-nums; transition:transform .2s; }
+    .rev-sub   { font-size:10.5px; color:rgba(255,255,255,.4); margin-top:2px; }
+
+    .upsell-card { background:#fff; border-radius:10px; overflow:hidden; border:1px solid rgba(0,0,0,.08); margin-bottom:6px; box-shadow:0 1px 3px rgba(0,0,0,.1); }
+    .upsell-h { background:linear-gradient(135deg,#4401ff,#6630ff); padding:9px 13px; display:flex; justify-content:space-between; align-items:center; }
+    .upsell-title { color:#fff; font-size:13px; font-weight:600; }
+    .upsell-badge { background:var(--gold); color:#4401ff; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; }
+    .upsell-body { padding:9px 13px; }
+    .upsell-desc { font-size:12px; color:var(--muted); margin-bottom:9px; line-height:1.5; }
+    .upsell-actions { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+    .btn-yes {
+      padding:7px; background:#4401ff; color:#fff; border:none; border-radius:7px;
+      font-size:12.5px; font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit;
+    }
+    .btn-yes:hover:not([disabled]) { background:#6630ff; }
+    .btn-no {
+      padding:7px; background:transparent; color:var(--muted); border:1px solid #ddd;
+      border-radius:7px; font-size:12.5px; cursor:pointer; font-family:inherit; transition:all .15s;
+    }
+    .btn-no:hover:not([disabled]) { background:#f5f5f5; }
+
+    /* ── SUGGESTIONS (quick reply chips) ── */
+    .suggestions-area {
+      padding: 6px 8px;
+      display: flex; gap: 6px; flex-wrap: wrap;
+      background: #1F2C33;
+      border-top: 1px solid rgba(255,255,255,.06);
+      flex-shrink: 0;
+      min-height: 46px;
+      align-items: center;
+    }
+    .sugg-btn {
+      padding: 5px 12px;
+      border: 1px solid var(--wa-grn);
+      border-radius: 18px;
+      font-size: 12px; color: var(--wa-grn);
+      background: transparent;
+      cursor: pointer; transition: all .15s;
+      font-weight: 500; white-space: nowrap; font-family: inherit;
+    }
+    .sugg-btn:hover { background: var(--wa-grn); color: #fff; }
+
+    /* ── INPUT BAR ── */
+    .input-bar {
+      padding: 8px 10px;
+      display: flex; align-items: center; gap: 8px;
+      background: #1F2C33;
+      flex-shrink: 0;
+    }
+    .ib-emoji {
+      font-size: 23px; cursor: pointer; color: #666666; flex-shrink:0;
+      background: none; border: none; padding: 0; line-height:1;
+    }
+    .ib-field {
+      flex: 1;
+      background: #2A3942;
+      border: none; border-radius: 22px;
+      padding: 9px 14px;
+      font-size: 14px; color: #D1D7DB;
+      outline: none; font-family: inherit;
+    }
+    .ib-field::placeholder { color: #666666; }
+    .ib-attach { font-size:22px; cursor:pointer; color:#666666; flex-shrink:0; background:none; border:none; padding:0; }
+    .ib-send {
+      width: 44px; height: 44px;
+      background: var(--wa-send);
+      border: none; border-radius: 50%;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 19px; flex-shrink: 0;
+      transition: background .2s;
+    }
+    .ib-send:hover { background: #008f6e; }
+    .ib-send.mic { font-size: 20px; }
+
+    /* ── SIDE PANELS ── */
+    .side-panel { padding-top: 20px; }
+    .panel-card { background:#fff; border-radius:20px; padding:22px; box-shadow:0 8px 32px rgba(11,37,69,.09); }
+    .panel-title { font-size:15px; font-weight:700; color:#666666; margin-bottom:3px; }
+    .panel-sub   { font-size:12px; color:#999; margin-bottom:18px; }
+
+    .roi-num { margin-bottom:14px; }
+    .roi-lbl  { font-size:10.5px; text-transform:uppercase; letter-spacing:1.5px; color:#999; margin-bottom:2px; }
+    .roi-val  { font-size:26px; font-weight:700; color:#666666; }
+    .roi-unit { font-size:13px; color:#999; font-weight:400; }
+    .roi-div  { height:1px; background:#e8e8e8; margin:14px 0; }
+    .slider-row { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:5px; }
+    .roi-slider { width:100%; accent-color:#666666; margin-bottom:14px; cursor:pointer; }
+    .roi-box { background:#666666; border-radius:12px; padding:16px; text-align:center; margin-top:14px; }
+    .roi-box .rv { font-size:28px; font-weight:700; color:#fff; }
+    .roi-box .rl { font-size:11px; color:rgba(255,255,255,.6); margin-top:3px; }
+
+    .feat-item { display:flex; gap:12px; margin-bottom:14px; align-items:flex-start; }
+    .feat-icon { width:38px; height:38px; background:#f5f5f5; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+    .feat-text h4 { font-size:13px; font-weight:600; color:#444; margin-bottom:2px; }
+    .feat-text p  { font-size:11.5px; color:#999; line-height:1.4; }
+    .cta-btn {
+      width:100%; padding:13px;
+      background:#666666; color:#fff; border:none;
+      border-radius:10px; font-size:14px; font-weight:700;
+      cursor:pointer; margin-top:6px; transition:all .2s; font-family:inherit;
+    }
+    .cta-btn:hover { background:#555; transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,.2); }
+
+    /* ── CHECK-IN CARD ── */
+    .ci-card {
+      background: linear-gradient(135deg, #4401ff, #6630ff);
+      border-radius: 14px; padding: 14px; color: #fff; margin-top: 6px;
+    }
+    .ci-card-title { font-size:14px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+    .ci-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; border-bottom:1px solid rgba(255,255,255,.1); padding-bottom:5px; }
+    .ci-row:last-of-type { border-bottom:none; }
+    .ci-row span:first-child { color:rgba(255,255,255,.6); }
+    .ci-row span:last-child  { font-weight:600; text-align:right; }
+    .ci-key {
+      background: linear-gradient(135deg, var(--gold), #a67c00);
+      border-radius: 10px; padding: 10px 14px; margin-top: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ci-key .key-icon { font-size: 26px; }
+    .ci-key .key-text { font-size:12px; color:#4401ff; }
+    .ci-key .key-num  { font-size:16px; font-weight:700; color:#4401ff; letter-spacing:2px; }
+
+    /* Progress bar */
+    .ci-progress {
+      background: rgba(255,255,255,.15); border-radius: 20px;
+      height: 4px; margin-bottom: 10px; overflow: hidden;
+    }
+    .ci-progress-fill {
+      background: var(--gold); height: 100%; border-radius: 20px;
+      transition: width .4s ease;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes pulse    { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+    @keyframes bounce   { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-8px)} }
+    .msg-row { animation: fadeUp .25s ease; }
+  </style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="eyebrow">AI-Powered Guest Experience</div>
+  <h1>Hotel Miramar — AI Agents</h1>
+  <p>Three intelligent agents handling bookings, reception & upselling 24/7</p>
+</header>
+
+<div class="demo-layout">
+
+  <!-- LEFT: ROI Calculator -->
+  <aside class="side-panel">
+    <div class="panel-card">
+      <div class="panel-title">ROI Calculator</div>
+      <div class="panel-sub">Adjust for your property</div>
+
+      <div class="slider-row">
+        <span>Hotel size</span>
+        <span id="roomsValue">50 rooms</span>
+      </div>
+      <input type="range" class="roi-slider" id="roomsSlider" min="10" max="200" value="50" oninput="updateROI()" />
+
+      <div class="roi-num">
+        <div class="roi-lbl">Staff hours saved / week</div>
+        <div class="roi-val" id="hoursValue">28<span class="roi-unit"> hrs</span></div>
+      </div>
+      <div class="roi-num">
+        <div class="roi-lbl">Extra upsell revenue / month</div>
+        <div class="roi-val" id="revenueValue">$5,500</div>
+      </div>
+      <div class="roi-num">
+        <div class="roi-lbl">Queries handled automatically</div>
+        <div class="roi-val">82<span class="roi-unit">%</span></div>
+      </div>
+      <div class="roi-div"></div>
+      <div class="roi-box">
+        <div class="rv" id="totalValue">$5,500/mo</div>
+        <div class="rl">additional revenue at your property</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER: Phone -->
+  <div class="phone">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <div class="sb-time">9:41</div>
+      <div class="sb-icons"><span>●●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+
+    <!-- WhatsApp header -->
+    <div class="wa-header">
+      <div class="wa-back">‹</div>
+      <div class="wa-av" id="agIcon">🏨</div>
+      <div class="wa-info">
+        <div class="wa-name" id="agName">Miramar Reservations</div>
+        <div class="wa-sub"  id="agSub">online</div>
+      </div>
+      <div class="wa-actions">
+        <span title="Video call">📹</span>
+        <span title="Call">📞</span>
+        <span title="Menu">⋮</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="wa-tabs">
+      <div class="tab-btn active" onclick="switchTab('reservations')">🏨 Booking</div>
+      <div class="tab-btn"       onclick="switchTab('reception')">🛎 Concierge</div>
+      <div class="tab-btn"       onclick="switchTab('upselling')">⭐ Offers</div>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-area" id="chatArea"></div>
+
+    <!-- Quick replies -->
+    <div class="suggestions-area" id="suggestionsArea"></div>
+
+    <!-- Input bar -->
+    <div class="input-bar">
+      <button class="ib-emoji">😊</button>
+      <input class="ib-field" id="msgInput" placeholder="Message" autocomplete="off" />
+      <button class="ib-attach">📎</button>
+      <button class="ib-send mic" id="sendBtn">🎤</button>
+    </div>
+
+  </div><!-- /phone -->
+
+  <!-- RIGHT: Features -->
+  <aside class="side-panel">
+    <div class="panel-card">
+      <div class="panel-title">Why Hotels Love This</div>
+      <div class="panel-sub">Real results, day one</div>
+
+      <div class="feat-item">
+        <div class="feat-icon">🕐</div>
+        <div class="feat-text">
+          <h4>24/7 Availability</h4>
+          <p>Answer guests at 3 AM without extra staff. Never miss a booking.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">💬</div>
+        <div class="feat-text">
+          <h4>Native WhatsApp</h4>
+          <p>Works where guests already are. Zero app downloads required.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">💰</div>
+        <div class="feat-text">
+          <h4>Automatic Upselling</h4>
+          <p>Offers sent at the perfect moment — post-booking, pre-arrival, day 1.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">📊</div>
+        <div class="feat-text">
+          <h4>Real-time Dashboard</h4>
+          <p>Track every conversation, revenue earned, and guest satisfaction.</p>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon">🔗</div>
+        <div class="feat-text">
+          <h4>PMS Integration</h4>
+          <p>Connects to Opera, Cloudbeds, and 40+ systems in 48 hours.</p>
+        </div>
+      </div>
+
+      <div class="roi-div"></div>
+      <button class="cta-btn" onclick="alert('¡Gracias por el interés! Te contactamos pronto.')">Book a Live Demo →</button>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// ── STATE ──
+let tab          = 'reservations';
+let isTyping     = false;
+let revenue      = 0;
+let rooms        = 50;
+
+// Booking state
+let reservPhase  = 'gathering';
+let booking      = { guests: null, checkIn: null, checkOut: null, nights: 1, room: null, name: null };
+
+// Check-in state
+let ciPhase = null; // null | name | doc | dob | nationality | address | arrival | confirm | done
+let ciData  = {};
+
+// ── HELPERS ──
+function getTime() {
+  return new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
+}
+function scrollDown() {
+  const ca = document.getElementById('chatArea');
+  setTimeout(() => ca.scrollTop = ca.scrollHeight, 60);
+}
+function clearChat() {
+  document.getElementById('chatArea').innerHTML = '';
+  document.getElementById('suggestionsArea').innerHTML = '';
+}
+
+function addDateChip(text) {
+  const ca = document.getElementById('chatArea');
+  const d = document.createElement('div');
+  d.className = 'date-chip';
+  d.innerHTML = `<span>${text}</span>`;
+  ca.appendChild(d); scrollDown();
+}
+
+function addMessage(role, html, time) {
+  const ca = document.getElementById('chatArea');
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + role;
+  const t = time || getTime();
+  const ticks = role === 'user' ? `<span class="bticks">✓✓</span>` : '';
+  const meta  = `<div class="bubble-meta"><span class="btime">${t}</span>${ticks}</div>`;
+  row.innerHTML = `<div class="msg-bubble">${html}${meta}</div>`;
+  ca.appendChild(row); scrollDown();
+}
+
+function showTyping() {
+  if (isTyping) return;
+  isTyping = true;
+  setSubtitle('typing…');
+  const ca = document.getElementById('chatArea');
+  const row = document.createElement('div');
+  row.id = 'typingRow'; row.className = 'typing-row';
+  row.innerHTML = `<div class="typing-bub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  ca.appendChild(row); scrollDown();
+}
+function hideTyping() {
+  isTyping = false;
+  setSubtitle('online');
+  const el = document.getElementById('typingRow');
+  if (el) el.remove();
+}
+function setSubtitle(text) {
+  document.getElementById('agSub').textContent = text;
+}
+
+function setSuggestions(items) {
+  const sa = document.getElementById('suggestionsArea');
+  sa.innerHTML = '';
+  items.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'sugg-btn';
+    btn.textContent = typeof item === 'string' ? item : item.label;
+    btn.onclick = () => {
+      if (typeof item === 'object' && item.action) item.action();
+      else sendMsg(btn.textContent);
+    };
+    sa.appendChild(btn);
+  });
+  updateSendBtn();
+}
+function clearSuggestions() {
+  document.getElementById('suggestionsArea').innerHTML = '';
+}
+
+function updateSendBtn() {
+  const btn   = document.getElementById('sendBtn');
+  const input = document.getElementById('msgInput');
+  if (input.value.trim().length > 0) {
+    btn.textContent = '➤';
+    btn.classList.remove('mic');
+  } else {
+    btn.textContent = '🎤';
+    btn.classList.add('mic');
+  }
+}
+
+function sendMsg(text) {
+  if (isTyping || !text.trim()) return;
+  document.getElementById('msgInput').value = '';
+  updateSendBtn();
+  clearSuggestions();
+  addMessage('user', text);
+  if (tab === 'reservations') advanceReservations(text);
+  else if (tab === 'reception') routeReception(text);
+  else handleUpsellingMsg(text);
+}
+
+function sendFromInput() {
+  const input = document.getElementById('msgInput');
+  const text  = input.value.trim();
+  if (!text || isTyping) return;
+  sendMsg(text);
+}
+
+// ── TAB SWITCH ──
+function switchTab(newTab) {
+  tab = newTab; isTyping = false; revenue = 0;
+  reservPhase = 'gathering';
+  booking  = { guests: null, checkIn: null, checkOut: null, nights: 1, room: null, name: null };
+  ciPhase  = null;
+  ciData   = {};
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', ['reservations','reception','upselling'][i] === newTab);
+  });
+  const agents = {
+    reservations: ['🏨', 'Miramar Reservations',  'online'],
+    reception:    ['🛎️', 'Miramar Concierge',      'online'],
+    upselling:    ['⭐', 'Miramar Offers',          'online'],
+  };
+  const [icon, name, sub] = agents[newTab];
+  document.getElementById('agIcon').textContent = icon;
+  document.getElementById('agName').textContent = name;
+  setSubtitle(sub);
+  clearChat();
+  if (newTab === 'reservations') initReservations();
+  else if (newTab === 'reception') initReception();
+  else initUpselling();
+  setTimeout(() => document.getElementById('msgInput').focus(), 120);
+}
+
+// ── AGENT 1: RESERVATIONS ──
+
+// Parse number of guests from free text
+function parseGuests(text) {
+  const t = text.toLowerCase();
+  const words = { one:1, two:2, three:3, four:4, five:5, six:6,
+                  uno:1, dos:2, tres:3, cuatro:4, cinco:5, seis:6 };
+  let m;
+  m = t.match(/(\d+)\s*(person|people|guest|adult|pax|persona|hu[eé]sped)/i);
+  if (m) return parseInt(m[1]);
+  m = t.match(/for\s+(\d+)/i);
+  if (m) return parseInt(m[1]);
+  m = t.match(/\b(one|two|three|four|five|six|uno|dos|tres|cuatro|cinco|seis)\b/i);
+  if (m) return words[m[1].toLowerCase()];
+  if (t.match(/solo|just me|myself|sola|alone/)) return 1;
+  m = t.match(/\b([1-9])\b/);
+  if (m) return parseInt(m[1]);
+  return null;
+}
+
+// Parse dates from free text, returns { checkIn, checkOut, nights } or null
+function parseDates(text) {
+  const t = text.toLowerCase().replace(/(\d+)(st|nd|rd|th)/gi, '$1'); // strip ordinals: 3rd→3
+  const base = new Date(2026, 1, 21);
+  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function fmt(d) { return `${DAYS[d.getDay()]} ${d.getDate()} ${MONS[d.getMonth()]}`; }
+  function addDays(d, n) { const r = new Date(d); r.setDate(d.getDate() + n); return r; }
+  function nextWeekday(wd) { const diff = (wd - base.getDay() + 7) % 7 || 7; return addDays(base, diff); }
+
+  const MONTH_MAP = {
+    jan:0, feb:1, mar:2, apr:3, may:4, jun:5, jul:6, aug:7, sep:8, oct:9, nov:10, dec:11,
+    january:0, february:1, march:2, april:3, june:5, july:6, august:7,
+    september:8, october:9, november:10, december:11,
+    enero:0, febrero:1, marzo:2, abril:3, mayo:4, junio:5, julio:6, agosto:7,
+    septiembre:8, octubre:9, noviembre:10, diciembre:11
+  };
+
+  // Parse a single date string like "3 march", "march 3", "3 de marzo"
+  function parseOne(str) {
+    const s = str.trim().replace(/(\d+)(st|nd|rd|th)/gi, '$1');
+    let m;
+    // "3 march" or "march 3" or "3 de marzo"
+    m = s.match(/(\d{1,2})\s*(?:de\s*)?([a-záéíóúñ]+)/i) ||
+        s.match(/([a-záéíóúñ]+)\s+(\d{1,2})/i);
+    if (m) {
+      const word = (m[2] || m[1] || '').toLowerCase();
+      const day  = parseInt(m[1]) || parseInt(m[2]);
+      // find month key by prefix match
+      const key = Object.keys(MONTH_MAP).find(k => word.startsWith(k) || k.startsWith(word.slice(0,3)));
+      if (key && day >= 1 && day <= 31) return new Date(2026, MONTH_MAP[key], day);
+    }
+    return null;
+  }
+
+  let ci = null, co = null, nights = 1;
+
+  // ── Range first: "3 march to 7 march", "march 3 - march 7", "del 3 al 7 de marzo"
+  const rangeRe = /(.+?)\s+(?:to|al|hasta|[-–])\s+(.+)/;
+  const range = t.match(rangeRe);
+  if (range) {
+    const a = parseOne(range[1]);
+    const b = parseOne(range[2]);
+    if (a && b && b > a) {
+      nights = Math.round((b - a) / 86400000);
+      return { checkIn: fmt(a), checkOut: fmt(b), nights };
+    }
+  }
+
+  // ── Single date keywords
+  if      (t.match(/today|hoy/))                       ci = new Date(base);
+  else if (t.match(/tomorrow|ma[nñ]ana/))              ci = addDays(base, 1);
+  else if (t.match(/this\s+weekend|este\s+fin/))       ci = addDays(base, 1);
+  else if (t.match(/next\s+weekend|pr[oó]ximo\s+fin/)) ci = addDays(base, 7);
+  else if (t.match(/friday|viernes/))                  ci = nextWeekday(5);
+  else if (t.match(/saturday|s[aá]bado/))              ci = nextWeekday(6);
+  else if (t.match(/sunday|domingo/))                  ci = nextWeekday(0);
+  else if (t.match(/monday|lunes/))                    ci = nextWeekday(1);
+  else if (t.match(/tuesday|martes/))                  ci = nextWeekday(2);
+  else if (t.match(/wednesday|mi[eé]rcoles/))          ci = nextWeekday(3);
+  else if (t.match(/thursday|jueves/))                 ci = nextWeekday(4);
+  else if (t.match(/next\s+week|pr[oó]xima\s+semana/)) ci = addDays(base, 7);
+  else                                                  ci = parseOne(t);
+
+  if (!ci) return null;
+
+  // ── Duration
+  const nm = t.match(/(\d+)\s*night/i);
+  if      (nm)                            nights = parseInt(nm[1]);
+  else if (t.match(/weekend|fin de semana/)) nights = 2;
+  else if (t.match(/\bweek\b|semana/))   nights = 7;
+
+  return { checkIn: fmt(ci), checkOut: fmt(addDays(ci, nights)), nights };
+}
+
+// Parse which room type the user wants
+function parseRoomChoice(text) {
+  const t = text.toLowerCase();
+  if (t.match(/standard|est[aá]ndar|basic|garden|cheap|m[aá]s barato|89|first|primero/))  return 'standard';
+  if (t.match(/superior|ocean|second|segundo|129/))                                          return 'superior';
+  if (t.match(/suite|junior|luxury|jacuzzi|butler|best|mejor|panoram|189|third|tercero/))  return 'suite';
+  return null;
+}
+
+// Room catalogue
+const ROOMS = [
+  { key:'standard', icon:'🛏', name:'Standard Room',  price:89,  view:'Garden View',   tags:['🌿 Garden View','🚿 Shower','📶 WiFi'],        avail:4 },
+  { key:'superior', icon:'✨', name:'Superior Room',  price:129, view:'Ocean View',    tags:['🌊 Ocean View','🛁 Bathtub','🍷 Minibar'],      avail:2 },
+  { key:'suite',    icon:'👑', name:'Junior Suite',   price:189, view:'Panoramic View',tags:['🌅 Panoramic','🛁 Jacuzzi','🛎 Butler service'], avail:1 },
+];
+
+function initReservations() {
+  reservPhase = 'gathering';
+  booking     = { guests:null, checkIn:null, checkOut:null, nights:1, room:null, name:null };
+  addDateChip('Today · Sat, 21 Feb 2026');
+  setTimeout(() => {
+    addMessage('agent',
+      `Hello! Welcome to <strong>Hotel Miramar</strong> 🏨<br>I'm Maya, your booking assistant.<br><br>Tell me — <strong>when</strong> would you like to stay and <strong>how many guests</strong>?`,
+      '9:41');
+    setSuggestions([
+      '2 people, this Friday',
+      '3 guests next weekend',
+      'Just me, tomorrow night',
+    ]);
+  }, 350);
+}
+
+function advanceReservations(text) {
+  if (reservPhase === 'gathering') {
+    const t = text.toLowerCase();
+    const g = parseGuests(text);
+    const d = parseDates(text);
+    if (g) booking.guests = g;
+    if (d) { booking.checkIn = d.checkIn; booking.checkOut = d.checkOut; booking.nights = d.nights; }
+
+    // User asking about rooms/prices without booking info → show catalogue
+    if (!g && !d && t.match(/room|habitaci[oó]n|precio|price|rate|tarifa|available|disponib|option|what do you have|cuanto|how much|cuánto/i)) {
+      showTyping();
+      return setTimeout(() => {
+        hideTyping();
+        addMessage('agent', `Of course! Here are our room types and prices at <strong>Hotel Miramar</strong>:<div class="room-opts">
+          <div class="room-opt">
+            <div class="room-opt-h"><span class="rn">🛏 Standard Room</span><span class="rp">$89/night</span></div>
+            <div class="room-opt-b"><span class="rtag">🌿 Garden View</span><span class="rtag">🚿 Shower</span><span class="rtag">📶 WiFi</span></div>
+          </div>
+          <div class="room-opt">
+            <div class="room-opt-h"><span class="rn">✨ Superior Room</span><span class="rp">$129/night</span></div>
+            <div class="room-opt-b"><span class="rtag">🌊 Ocean View</span><span class="rtag">🛁 Bathtub</span><span class="rtag">🍷 Minibar</span></div>
+          </div>
+          <div class="room-opt">
+            <div class="room-opt-h"><span class="rn">👑 Junior Suite</span><span class="rp">$189/night</span></div>
+            <div class="room-opt-b"><span class="rtag">🌅 Panoramic</span><span class="rtag">🛁 Jacuzzi</span><span class="rtag">🛎 Butler</span></div>
+          </div>
+        </div>All rooms include free WiFi, daily housekeeping & access to rooftop pool 🏊<br><br>To check <strong>real-time availability</strong>, just tell me your dates and number of guests!`);
+        setSuggestions(['2 guests, this Friday', '3 guests next weekend', '1 guest, March 5–7']);
+      }, 1000);
+    }
+
+    if (booking.guests && booking.checkIn) {
+      showAvailability();
+    } else if (!booking.guests && !booking.checkIn) {
+      showTyping();
+      setTimeout(() => {
+        hideTyping();
+        addMessage('agent', `Happy to help! 😊 To check availability I need two things:<br><br>📅 <strong>Dates</strong> — e.g. "this Friday", "March 5 to 7"<br>👥 <strong>Guests</strong> — e.g. "2 people", "3 guests"<br><br>You can send both in one message, like: <em>"2 guests, March 5 to 7"</em>`);
+        setSuggestions(['2 guests this Friday', '3 guests next weekend', 'What rooms do you have?']);
+      }, 900);
+    } else if (!booking.guests) {
+      showTyping();
+      setTimeout(() => {
+        hideTyping();
+        addMessage('agent', `Got it — <strong>${booking.checkIn} → ${booking.checkOut}</strong>! 📅<br><br>Just need one more thing: <strong>how many guests</strong> will be staying?`);
+        setSuggestions(['1 guest', '2 guests', '3 guests', '4 guests']);
+      }, 900);
+    } else {
+      showTyping();
+      setTimeout(() => {
+        hideTyping();
+        addMessage('agent', `Great, <strong>${booking.guests} guest${booking.guests>1?'s':''}</strong>! 👥<br><br>Now I need the <strong>dates</strong>. Try something like:<br><span style="color:#666666;font-size:12.5px">• "this Friday"<br>• "March 5 to 7"<br>• "next weekend"<br>• "3rd to 7th March"</span>`);
+        setSuggestions(['This Friday','Next weekend','March 5 to 7']);
+      }, 900);
+    }
+
+  } else if (reservPhase === 'selecting') {
+    const choice = parseRoomChoice(text);
+    if (choice) {
+      selectRoom(choice);
+    } else {
+      showTyping();
+      setTimeout(() => {
+        hideTyping();
+        addMessage('agent', `I didn't catch which room you'd like 😊 Please choose one of these:<br><br>🛏 <strong>Standard</strong> — $${89*booking.nights} total<br>✨ <strong>Superior</strong> — $${129*booking.nights} total<br>👑 <strong>Suite</strong> — $${189*booking.nights} total<br><br>Just type the room name or tap a button below!`);
+        setSuggestions([
+          { label:`🛏 Standard — $${89*booking.nights}`,  action:()=>{ addMessage('user','Standard Room please'); clearSuggestions(); selectRoom('standard'); }},
+          { label:`✨ Superior — $${129*booking.nights}`, action:()=>{ addMessage('user','Superior Room please'); clearSuggestions(); selectRoom('superior'); }},
+          { label:`👑 Suite — $${189*booking.nights}`,    action:()=>{ addMessage('user','Junior Suite please'); clearSuggestions(); selectRoom('suite'); }},
+        ]);
+      }, 800);
+    }
+
+  } else if (reservPhase === 'naming') {
+    // Accept anything that looks like a name (> 3 chars, not a command)
+    const name = text.trim();
+    if (name.length >= 3 && !name.match(/^(yes|no|ok|si|sí)$/i)) {
+      booking.name = name;
+      confirmBooking();
+    } else {
+      showTyping();
+      setTimeout(() => {
+        hideTyping();
+        addMessage('agent', `Could you please share your <strong>full name</strong> to complete the booking?`);
+      }, 800);
+    }
+
+  } else { // done — answer follow-up questions
+    const t = text.toLowerCase();
+    let reply = `Of course! For anything else feel free to message us anytime. See you soon, ${booking.name || 'there'}! 😊`;
+    if (t.match(/early|check.?in|arrive|llegada/))
+      reply = `I've added an early check-in request to your reservation ✅ Our front desk will do their best to have your room ready by noon. You'll get a WhatsApp notification when it's ready!`;
+    else if (t.match(/wifi|internet|password|contraseña/))
+      reply = `📶 <strong>WiFi:</strong> Network <strong>Miramar_Guest</strong> · Password <strong>Miramar2024!</strong><br>Available in all rooms and common areas. Anything else?`;
+    else if (t.match(/breakfast|desayun|food|comer/))
+      reply = `🍳 Breakfast at <strong>La Terraza</strong>:<br>Mon–Fri 7:00–10:30 AM · Sat–Sun 7:30–11:30 AM<br>Full buffet included. Enjoy!`;
+    else if (t.match(/pool|piscina|spa|gym/))
+      reply = `🏊 Rooftop Pool: <strong>7 AM–10 PM</strong> · Spa: <strong>9 AM–9 PM</strong> · Gym: 24h. Towels provided at the deck!`;
+    else if (t.match(/park|valet|coche|car/))
+      reply = `🚗 Valet parking $28/night · Self-park $18/night (Level B2). Both available 24/7.`;
+    else if (t.match(/cancel|cambiar|change|modify/))
+      reply = `No problem! I can help with changes. Your booking is <strong>free cancellation</strong> up to 24h before check-in. Would you like to modify dates, room type or cancel?`;
+    showTyping();
+    setTimeout(() => { hideTyping(); addMessage('agent', reply); }, 1100);
+  }
+}
+
+function showAvailability() {
+  reservPhase = 'selecting';
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage('agent', `Checking availability for <strong>${booking.guests} guest${booking.guests>1?'s':''}</strong> · <strong>${booking.checkIn} → ${booking.checkOut}</strong> (${booking.nights} night${booking.nights>1?'s':''})…`);
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      let cards = '';
+      ROOMS.forEach(r => {
+        const total = r.price * booking.nights;
+        cards += `
+          <div class="room-opt" style="cursor:pointer" onclick="selectRoom('${r.key}')">
+            <div class="room-opt-h">
+              <span class="rn">${r.icon} ${r.name}</span>
+              <span class="rp">$${r.price}/night</span>
+            </div>
+            <div class="room-opt-b">
+              ${r.tags.map(t=>`<span class="rtag">${t}</span>`).join('')}
+              <span class="rtag" style="background:#e8f5e9;color:#2e7d32">✓ ${r.avail} left</span>
+            </div>
+            <div style="padding:3px 10px 7px;font-size:11.5px;color:#666666">
+              ${booking.nights} night${booking.nights>1?'s':''}: <strong style="color:#111">$${total} total</strong> · Tap to book
+            </div>
+          </div>`;
+      });
+      addMessage('agent', `✅ <strong>3 room types available</strong> for your dates! Tap a room to book it:<div class="room-opts">${cards}</div>`);
+      setSuggestions([
+        { label:`🛏 Standard — $${89*booking.nights}`,   action:()=>{ addMessage('user','Standard Room please'); clearSuggestions(); selectRoom('standard'); }},
+        { label:`✨ Superior — $${129*booking.nights}`,  action:()=>{ addMessage('user','Superior Room please'); clearSuggestions(); selectRoom('superior'); }},
+        { label:`👑 Suite — $${189*booking.nights}`,     action:()=>{ addMessage('user','Junior Suite please'); clearSuggestions(); selectRoom('suite'); }},
+      ]);
+    }, 1800);
+  }, 900);
+}
+
+function selectRoom(key) {
+  clearSuggestions();
+  const r = ROOMS.find(x => x.key === key);
+  booking.room = r;
+  reservPhase = 'naming';
+  const total = r.price * booking.nights;
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage('agent', `${r.icon} <strong>${r.name}</strong> — ${r.view}<br><br>
+      📅 ${booking.checkIn} → ${booking.checkOut}<br>
+      👥 ${booking.guests} guest${booking.guests>1?'s':''} · ${booking.nights} night${booking.nights>1?'s':''}<br>
+      💰 <strong>$${total} total</strong><br><br>
+      To confirm the booking, what's your <strong>full name</strong>?`);
+    setSuggestions(['Sarah Johnson','John Smith','María García']);
+  }, 1200);
+}
+
+function confirmBooking() {
+  clearSuggestions();
+  reservPhase = 'done';
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    const num   = 'MIR-' + (10000 + Math.floor(Math.random() * 89999));
+    const total = booking.room.price * booking.nights;
+    addMessage('agent', `
+      <div class="conf-card">
+        <div class="conf-title">✅ Booking Confirmed!</div>
+        <div class="conf-row"><span>Guest</span><strong>${booking.name}</strong></div>
+        <div class="conf-row"><span>Room</span><span>${booking.room.name} — ${booking.room.view}</span></div>
+        <div class="conf-row"><span>Check-in</span><span>${booking.checkIn} · 3:00 PM</span></div>
+        <div class="conf-row"><span>Check-out</span><span>${booking.checkOut} · 12:00 PM</span></div>
+        <div class="conf-row"><span>Guests</span><span>${booking.guests}</span></div>
+        <div class="conf-row"><span>Total</span><strong>$${total}</strong></div>
+        <div class="conf-num">${num}</div>
+      </div>`);
+    setTimeout(() => {
+      addMessage('agent', `📧 A confirmation email is on its way with:<br>• Booking details & receipt<br>• Hotel address & directions<br>• Contact: <strong>+1 (305) 555-0192</strong><br>• WhatsApp: <strong>+1 (305) 555-0193</strong><br>• Email: <strong>info@hotelmiramar.com</strong>`);
+      setTimeout(() => {
+        addMessage('agent', `💡 <strong>Save time on arrival!</strong> You can complete your <strong>mobile check-in</strong> right here on WhatsApp before you arrive — no queue at reception, go straight to your room 🔑<br><br>Want to do it now?`);
+        setSuggestions([
+          { label: 'Yes, do check-in now ✅', action: () => { addMessage('user','Yes, do check-in now'); clearSuggestions(); switchTab('reception'); setTimeout(startCheckIn, 600); }},
+          'I\'ll do it later',
+        ]);
+      }, 1200);
+    }, 900);
+    setSuggestions(['Can I request early check-in?','What are the pool hours?']);
+  }, 2000);
+}
+
+// ── AGENT 2: RECEPTION ──
+
+const CONCIERGE = {
+  wifi: {
+    match: /wifi|wi-fi|internet|password|contraseña|red|network|connect/i,
+    reply: `📶 <strong>WiFi Details</strong><br><br>Network: <strong>Miramar_Guest</strong><br>Password: <strong>Miramar2024!</strong><br><br>For best speeds use the 5GHz band. Having trouble? Call ext. <strong>0</strong> anytime — we'll connect you in minutes.`,
+    follow: ['Pool hours?', 'What time is breakfast?']
+  },
+  breakfast: {
+    match: /breakfast|desayun|buffet|eat|morning|mañana|comer|food|café|coffee/i,
+    reply: `🍳 <strong>Breakfast — La Terraza Restaurant</strong><br><br>🕖 Mon–Fri: <strong>7:00 – 10:30 AM</strong><br>🕖 Sat–Sun: <strong>7:30 – 11:30 AM</strong><br><br>Full hot & cold buffet, live egg station, artisan pastries & freshly squeezed juices. Enjoy! ☀️<br><br><em>Room service breakfast available until noon (+$5 tray fee)</em>`,
+    follow: ['WiFi password?', 'Room service menu?']
+  },
+  pool: {
+    match: /pool|piscina|spa|jacuzzi|gym|fitness|sauna|steam|alberca|nadar|swim/i,
+    reply: `🏊 <strong>Pool & Wellness</strong><br><br>🏊 Rooftop Pool: <strong>7:00 AM – 10:00 PM</strong><br>🧖 Spa & Steam Room: <strong>9:00 AM – 9:00 PM</strong><br>🏋️ Fitness Center: <strong>24 hours</strong><br><br>Towels & sunscreen provided at the pool deck. Spa treatments require reservations — call ext. <strong>3</strong>.`,
+    follow: ['Book a spa treatment', 'Breakfast hours?']
+  },
+  parking: {
+    match: /park|valet|car|coche|auto|garaje|vehicle|estacion/i,
+    reply: `🚗 <strong>Parking Options</strong><br><br>🏨 <strong>Valet Service:</strong> $28/night — 24/7 at the main entrance<br>🅿️ <strong>Self-parking:</strong> $18/night — Level B2<br><br>Your vehicle is in a fully monitored, secure facility. Call ext. <strong>5</strong> anytime to retrieve it. Average wait: under 5 minutes.`,
+    follow: ['WiFi password?', 'Check-out time?']
+  },
+  checkout: {
+    match: /check.?out|checkout|salida|leave|exit|late check|hora de salida/i,
+    reply: `🏁 <strong>Check-out</strong><br><br>📱 Express check-out via the hotel app — no front desk stop needed<br>🕛 Standard check-out: <strong>12:00 PM</strong><br>🕐 Late check-out options:<br>&nbsp;&nbsp;• Until 2:00 PM → <strong>$25</strong><br>&nbsp;&nbsp;• Until 4:00 PM → <strong>$50</strong><br><br>Your invoice will be emailed automatically. Want to request a late check-out?`,
+    follow: ['Yes, request late check-out', 'No, that\'s fine']
+  },
+  roomservice: {
+    match: /room service|roomservice|order|food|dinner|lunch|cena|almuerzo|pedir|hambre|hungry|eat/i,
+    reply: `🍽 <strong>Room Service</strong><br><br>Available: <strong>6:00 AM – midnight</strong> (limited menu until 2 AM)<br><br>📱 Order via the hotel app — fastest option (~15 min)<br>📞 Call ext. <strong>4</strong> from your room (~20 min)<br><br>🌟 Tonight's chef special: <em>Seafood linguine with saffron broth</em><br>🥗 Vegan & gluten-free options available`,
+    follow: ['What\'s the full menu?', 'WiFi to use the app?']
+  },
+  taxi: {
+    match: /taxi|uber|cab|transport|airport|aeropuerto|transfer|ride|llevar/i,
+    reply: `🚕 <strong>Transport & Transfers</strong><br><br>We can arrange:<br>🛫 Airport transfer: <strong>$45</strong> (sedan) / <strong>$65</strong> (SUV)<br>🚕 City taxi: ~$12–18 depending on destination<br>🚌 Shuttle to city center: every 30 min, <strong>$5/person</strong><br><br>Just let me know your destination and pickup time — I'll have it ready for you! 🙌`,
+    follow: ['Book airport transfer', 'Schedule a taxi for tonight']
+  },
+  towels: {
+    match: /towel|toalla|amenities|shampoo|soap|jabón|pillow|almohada|blanket|manta|iron|plancha/i,
+    reply: `🛎 <strong>Housekeeping Request</strong><br><br>I'm sending a request to housekeeping right now! Expected delivery: <strong>15–20 minutes</strong>.<br><br>You can also call ext. <strong>2</strong> directly for immediate assistance. Is there anything else you need for your room?`,
+    follow: ['Extra pillows too please', 'That\'s all, thank you!']
+  },
+  laundry: {
+    match: /laundry|lavandería|wash|dry clean|ropa|clothes|lavar/i,
+    reply: `👔 <strong>Laundry Service</strong><br><br>🕗 Same-day service: drop off before <strong>9:00 AM</strong>, back by 6 PM<br>⚡ Express (4h): +50% surcharge<br>🧺 Dry cleaning available<br><br>Leave your laundry bag (provided in the closet) outside your door or call ext. <strong>2</strong>. Prices on the in-room menu.`,
+    follow: ['What are the prices?', 'Thanks!']
+  },
+  wakeup: {
+    match: /wake.?up|alarm|despertar|llamada|morning call/i,
+    reply: `⏰ <strong>Wake-up Call</strong><br><br>No problem! I've scheduled a wake-up call for you. Just confirm the time you'd like — I'll make sure you don't miss it 😊<br><br>You can also set it directly on your room phone: press <strong>*55</strong> and follow the prompts.`,
+    follow: ['6:00 AM please', '7:30 AM']
+  },
+  complaint: {
+    match: /problem|issue|broken|not working|complaint|queja|problema|roto|noise|ruido|cold|calor|hot|ac|heat|temperatura/i,
+    reply: `🙏 I'm really sorry to hear that — that's not the experience we want you to have!<br><br>I'm flagging this with our maintenance team <strong>right now</strong> as a priority. Someone will be at your room within <strong>15 minutes</strong>.<br><br>As an apology, I'm adding a <strong>complimentary drink</strong> credit to your room account. 🍹 Is there anything else I can help with?`,
+    follow: ['Thank you!', 'Please also bring extra towels']
+  },
+  restaurant: {
+    match: /restaurant|dinner|reserv|table|mesa|tonight|esta noche|eat out|cena/i,
+    reply: `🍽 <strong>Restaurant Recommendation</strong><br><br>Our concierge team loves these nearby spots:<br><br>⭐ <strong>La Mar</strong> — Peruvian seafood, 5 min walk (book in advance!)<br>⭐ <strong>El Mercado</strong> — Local tapas & wine, 3 min walk<br>⭐ <strong>Sakura</strong> — Japanese omakase, 8 min taxi<br><br>Want me to make a reservation for you tonight? Just tell me the time and number of people! 😊`,
+    follow: ['Book La Mar for 2 at 8pm', 'What else is nearby?']
+  },
+  checkin: {
+    match: /check.?in|checkin|arrive|llegada|when can|room ready|llego/i,
+    reply: `🔑 <strong>Check-in Information</strong><br><br>Standard check-in: <strong>3:00 PM</strong><br><br>📱 You'll receive a <strong>digital key</strong> on WhatsApp — no need to stop at the front desk<br>🌅 Early check-in: available from <strong>12:00 PM</strong> (subject to availability, complimentary for you!)<br><br>Want me to request early check-in for your arrival?`,
+    follow: ['Yes please, request early check-in', 'No, 3 PM is fine']
+  },
+  spa: {
+    match: /spa|massage|masaje|treatment|facial|manicure|pedicure|beauty/i,
+    reply: `💆 <strong>Miramar Spa & Wellness</strong><br><br>Open daily <strong>9:00 AM – 9:00 PM</strong><br><br>Popular treatments:<br>💆 Swedish Massage (60 min) — <strong>$95</strong><br>💆 Deep Tissue (90 min) — <strong>$135</strong><br>✨ Signature Facial (60 min) — <strong>$85</strong><br>💅 Manicure + Pedicure — <strong>$65</strong><br><br>Shall I book a treatment for you? Tell me the service and your preferred time 🙌`,
+    follow: ['Book a massage for tomorrow', 'What other treatments are available?']
+  },
+};
+
+function initReception() {
+  addDateChip('Pre-arrival · Thu, 20 Feb');
+  setTimeout(() => {
+    addMessage('agent',
+      `🌟 Good evening! This is <strong>Hotel Miramar</strong>.<br><br>Your check-in is <strong>tomorrow at 3:00 PM</strong>. We're so excited to welcome you!`, '20:30');
+    setTimeout(() => {
+      addMessage('agent',
+        `Here's a quick preview of what awaits:<br><br>
+         🔑 Digital key sent to your WhatsApp before arrival<br>
+         🚗 Valet parking at the main entrance ($28/night)<br>
+         🏊 Rooftop pool open until 10 PM tonight<br>
+         🍳 Breakfast from 7:00 AM at La Terraza<br><br>
+         Just type anything — I'm your 24/7 concierge 😊`);
+      setSuggestions([
+        'Do my online check-in',
+        'WiFi password?',
+        'Can I order room service?',
+        'I need a taxi',
+      ]);
+    }, 800);
+  }, 300);
+}
+
+function routeReception(text) {
+  if (isTyping) return;
+
+  // ── If check-in flow is active, always route there
+  if (ciPhase && ciPhase !== 'done') {
+    return handleCheckIn(text);
+  }
+
+  // ── Trigger check-in flow
+  if (/check.?in|checkin|online check|auto check|registro|hacer el check|quiero registrar|self check/i.test(text)) {
+    return startCheckIn();
+  }
+
+  // Match against all intents
+  for (const [key, intent] of Object.entries(CONCIERGE)) {
+    if (intent.match.test(text)) {
+      return replyWithIntent(intent);
+    }
+  }
+  // Late check-out confirmation
+  if (text.toLowerCase().match(/yes.*late|late.*yes|sí.*tarde|request.*late/i)) {
+    showTyping();
+    return setTimeout(() => {
+      hideTyping();
+      addMessage('agent', `✅ Late check-out until <strong>2:00 PM</strong> confirmed! The $25 charge will be added to your room bill. Sleep in and enjoy a relaxed morning 🌅`);
+      clearSuggestions();
+    }, 1200);
+  }
+  // Wake-up time confirmation
+  const timeMatch = text.match(/(\d{1,2})[:\.]?(\d{0,2})\s*(am|pm|AM|PM)?/);
+  if (timeMatch && text.toLowerCase().match(/am|pm|:[0-5]\d|\b[6-9]\b|\b1[0-2]\b/)) {
+    showTyping();
+    return setTimeout(() => {
+      hideTyping();
+      addMessage('agent', `⏰ Wake-up call set for <strong>${text.trim()}</strong> — done! Is there anything else I can arrange for you? 😊`);
+      clearSuggestions();
+    }, 1000);
+  }
+  // Positive/done responses
+  if (text.toLowerCase().match(/^(no|no thanks|that's all|gracias|thank|perfect|great|ok|👍)$/i)) {
+    showTyping();
+    return setTimeout(() => {
+      hideTyping();
+      addMessage('agent', `Perfect! Have a wonderful stay 🌟 Remember, I'm here 24/7 — just send a message anytime!`);
+      clearSuggestions();
+    }, 900);
+  }
+  // Generic fallback — still helpful
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage('agent', `Got it! I'm passing your request to our team right now 🙌 You can expect a response within a few minutes.<br><br>Is there anything else I can help you with?`);
+    setSuggestions([
+      'WiFi password?',
+      'Pool hours?',
+      'Order room service',
+      'Need a taxi',
+    ]);
+  }, 1300);
+}
+
+// ── AUTO CHECK-IN FLOW ──
+const CI_STEPS = {
+  reservation: { label: 'Reservation Number', q: `First, your <strong>reservation number</strong>.<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "MIR-48291" — found in your booking confirmation</span>`, hint: null },
+  name:        { label: 'Full Name',           q: `Your <strong>full name</strong> as it appears on your ID?`, hint: null },
+  doc:         { label: 'ID Document',         q: `Your <strong>ID document</strong>:<br>Type the document type and number.<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "Passport AB123456" · "DNI 12345678X"</span>`, hint: null },
+  dob:         { label: 'Date of Birth',       q: `Your <strong>date of birth</strong>? (DD/MM/YYYY)<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "15/03/1990"</span>`, hint: null },
+  nationality: { label: 'Nationality',         q: `Your <strong>nationality</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "Spanish", "Argentine", "American"</span>`, hint: ['Spanish','Argentine','Mexican','American','British'] },
+  address:     { label: 'Home Address',        q: `Your <strong>home address</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">Street, number, city and country<br>e.g. "Av. Corrientes 1234, Buenos Aires, Argentina"</span>`, hint: null },
+  arrival:     { label: 'Estimated Arrival',   q: `What time do you expect to <strong>arrive at the hotel</strong>?<br><span style="color:rgba(255,255,255,.6);font-size:12px">e.g. "3 PM", "around 15:30", "after 6 PM"</span>`, hint: ['Before 3 PM','Around 3–4 PM','After 6 PM','Late night (after 10 PM)'] },
+};
+
+const CI_ORDER = ['reservation','name','doc','dob','nationality','address','arrival'];
+
+function progressBar(step) {
+  const idx = CI_ORDER.indexOf(step);
+  const pct = Math.round(((idx + 1) / (CI_ORDER.length + 1)) * 100);
+  return `<div class="ci-progress"><div class="ci-progress-fill" style="width:${pct}%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:8px">Step ${idx+1} of ${CI_ORDER.length}</div>`;
+}
+
+function startCheckIn() {
+  ciPhase = 'reservation';
+  ciData  = {};
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage('agent', `✅ <strong>Online Check-in</strong><br><br>Perfect! I'll guide you through the process — it only takes <strong>2 minutes</strong> and you'll receive your digital room key when done 🔑<br><br>I'll need a few details for the hotel registry. Let's start!`);
+    setTimeout(() => {
+      addMessage('agent', `<div class="ci-card" style="background:linear-gradient(135deg,#4401ff,#6630ff)">${progressBar('reservation')}<div style="font-size:13px">${CI_STEPS.reservation.q}</div></div>`);
+    }, 700);
+  }, 1000);
+}
+
+function handleCheckIn(text) {
+  if (ciPhase === 'confirm') {
+    const t = text.toLowerCase();
+    if (t.match(/yes|confirm|correct|sí|si|ok|confirmar|todo bien|correcto/i)) {
+      completeCheckIn();
+    } else if (t.match(/no|change|wrong|cambiar|incorrecto/i)) {
+      ciPhase = null;
+      showTyping();
+      setTimeout(() => {
+        hideTyping();
+        addMessage('agent', `No problem! Let's start over. Which detail would you like to correct?`);
+        setSuggestions(CI_ORDER.map(k => `Correct ${CI_STEPS[k].label}`));
+      }, 800);
+    } else {
+      completeCheckIn(); // assume yes
+    }
+    return;
+  }
+
+  // Validate & save current field
+  const val = text.trim();
+  if (val.length < 2) {
+    showTyping();
+    return setTimeout(() => {
+      hideTyping();
+      addMessage('agent', `I didn't catch that 😊 ${CI_STEPS[ciPhase].q}`);
+    }, 700);
+  }
+
+  // Save value
+  ciData[ciPhase] = val;
+  clearSuggestions();
+
+  // Advance to next step
+  const idx  = CI_ORDER.indexOf(ciPhase);
+  const next = CI_ORDER[idx + 1];
+
+  if (!next) {
+    // All data collected → show summary
+    ciPhase = 'confirm';
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      addMessage('agent', `Almost done! Please review your information:<div class="ci-card">
+        <div class="ci-card-title">📋 Check-in Summary</div>
+        <div class="ci-row"><span>Reservation</span><span>${ciData.reservation}</span></div>
+        <div class="ci-row"><span>Full Name</span><span>${ciData.name}</span></div>
+        <div class="ci-row"><span>Document</span><span>${ciData.doc}</span></div>
+        <div class="ci-row"><span>Date of Birth</span><span>${ciData.dob}</span></div>
+        <div class="ci-row"><span>Nationality</span><span>${ciData.nationality}</span></div>
+        <div class="ci-row"><span>Home Address</span><span>${ciData.address}</span></div>
+        <div class="ci-row"><span>Arrival</span><span>${ciData.arrival}</span></div>
+      </div>Is everything correct?`);
+      setSuggestions(['Yes, confirm check-in ✅', 'No, I need to change something']);
+    }, 1200);
+  } else {
+    // Next question
+    ciPhase = next;
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      const step = CI_STEPS[next];
+      addMessage('agent', `<div class="ci-card" style="background:linear-gradient(135deg,#4401ff,#6630ff)">${progressBar(next)}<div style="font-size:13px">${step.q}</div></div>`);
+      if (step.hint) setSuggestions(step.hint);
+    }, 900);
+  }
+}
+
+function completeCheckIn() {
+  ciPhase = 'done';
+  clearSuggestions();
+  const roomKey = 'KEY-' + Math.floor(1000 + Math.random() * 9000);
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage('agent', `<div class="ci-card">
+      <div class="ci-card-title">✅ Check-in Complete!</div>
+      <div class="ci-row"><span>Guest</span><span>${ciData.name}</span></div>
+      <div class="ci-row"><span>Room</span><span>Superior — Ocean View</span></div>
+      <div class="ci-row"><span>Check-in</span><span>Fri 21 Feb · from ${ciData.arrival}</span></div>
+      <div class="ci-row"><span>Check-out</span><span>Sat 22 Feb · 12:00 PM</span></div>
+      <div class="ci-key">
+        <div class="key-icon">🔑</div>
+        <div>
+          <div class="key-text">Your Digital Room Key</div>
+          <div class="key-num">${roomKey}</div>
+          <div class="key-text" style="margin-top:2px">Show at reception or use the hotel app</div>
+        </div>
+      </div>
+    </div>
+    <br>Welcome to Hotel Miramar, <strong>${ciData.name.split(' ')[0]}</strong>! 🌟 Head straight to your room — no queue needed. See you soon!`);
+    setTimeout(() => {
+      addMessage('agent', `If you need anything before or during your stay, I'm here 24/7. Is there anything else I can arrange for you?`);
+      setSuggestions(['Pool hours?', 'Can I order dinner?', 'Need a taxi from airport']);
+    }, 1000);
+  }, 2000);
+}
+
+function replyWithIntent(intent) {
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage('agent', intent.reply);
+    if (intent.follow && intent.follow.length) {
+      setTimeout(() => {
+        setSuggestions([
+          ...intent.follow,
+          { label: 'Something else', action: () => {
+            clearSuggestions();
+            addMessage('agent', `Of course! What else can I help you with? 😊`);
+            setSuggestions(['WiFi password?','Pool hours?','Order room service','Need a taxi']);
+          }}
+        ]);
+      }, 500);
+    }
+  }, 1300);
+}
+
+// ── AGENT 3: UPSELLING ──
+function initUpselling() {
+  const ca = document.getElementById('chatArea');
+  const banner = document.createElement('div');
+  banner.className = 'revenue-banner';
+  banner.innerHTML = `
+    <div class="rev-label">Extra Revenue This Month</div>
+    <div class="rev-amt" id="revAmt">$0</div>
+    <div class="rev-sub">from upsell conversions · demo session</div>`;
+  ca.appendChild(banner);
+
+  setTimeout(() => {
+    addMessage('agent', `🎉 <strong>Booking confirmed, Sarah!</strong> You're all set for Feb 21–22.<br><br>I've selected some <strong>exclusive offers</strong> just for you — available for a limited time:`, '9:41');
+    setTimeout(() => addUpsellCard('upgrade',  '🛏 Room Upgrade',      '+$40/night', 'Upgrade to our Junior Suite — panoramic ocean views, private jacuzzi, butler service. Only 1 suite left tonight!',                      40), 700);
+    setTimeout(() => addUpsellCard('breakfast','🍳 Breakfast Package', '$18/person', 'Start each morning at La Terraza with our award-winning buffet. Artisan coffee, live egg station & freshly baked pastries.', 36), 1200);
+    setTimeout(() => addUpsellCard('checkout', '🕐 Late Checkout',     '$25 total',  'Stay until 2:00 PM instead of noon. Enjoy a slow, relaxed morning without rushing out.',                                    25), 1700);
+  }, 300);
+}
+
+function addUpsellCard(id, title, badge, desc, amount) {
+  const ca = document.getElementById('chatArea');
+  const card = document.createElement('div');
+  card.className = 'upsell-card'; card.id = 'uc-' + id;
+  card.innerHTML = `
+    <div class="upsell-h">
+      <span class="upsell-title">${title}</span>
+      <span class="upsell-badge">${badge}</span>
+    </div>
+    <div class="upsell-body">
+      <p class="upsell-desc">${desc}</p>
+      <div class="upsell-actions" id="ua-${id}">
+        <button class="btn-yes" onclick="acceptUpsell('${id}',${amount})">✓ Yes, add it!</button>
+        <button class="btn-no"  onclick="declineUpsell('${id}')">No thanks</button>
+      </div>
+    </div>`;
+  ca.appendChild(card); scrollDown();
+}
+
+function acceptUpsell(id, amount) {
+  const actions = document.getElementById('ua-' + id);
+  const card    = document.getElementById('uc-' + id);
+  actions.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#059669;font-weight:600;font-size:13px;padding:6px">✅ Added to your stay!</div>`;
+  card.style.borderColor = '#059669';
+  revenue += amount;
+  const el = document.getElementById('revAmt');
+  if (el) { el.textContent = '$' + revenue; el.style.transform = 'scale(1.25)'; setTimeout(()=>el.style.transform='',250); }
+  const msgs = {
+    upgrade:   `🛏 Suite upgrade confirmed! A bottle of champagne will be waiting on arrival. Can't wait to see your face when you see the view! 🥂`,
+    breakfast: `🍳 Breakfast for 2 added! See you at La Terraza tomorrow morning. Chef's pick: eggs benedict with smoked salmon 😋`,
+    checkout:  `🕐 Late checkout until 2 PM confirmed! I've updated your reservation. Enjoy your extra morning 😊`,
+  };
+  setTimeout(() => addMessage('agent', msgs[id]), 450);
+}
+
+function declineUpsell(id) {
+  const actions = document.getElementById('ua-' + id);
+  const card    = document.getElementById('uc-' + id);
+  actions.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#666666;font-size:12px;padding:6px">No problem — offer declined.</div>`;
+  card.style.opacity = '0.5';
+}
+
+function handleUpsellingMsg(text) {
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage('agent', `Thanks for your message! Would you like to know more about any of our offers? I'm happy to help 😊`);
+  }, 1100);
+}
+
+// ── ROI CALCULATOR ──
+function updateROI() {
+  rooms = parseInt(document.getElementById('roomsSlider').value);
+  document.getElementById('roomsValue').textContent = rooms + ' rooms';
+  const hrs = Math.round(rooms * 0.56);
+  const rev = Math.round(rooms * 110);
+  document.getElementById('hoursValue').innerHTML    = hrs + '<span class="roi-unit"> hrs</span>';
+  document.getElementById('revenueValue').textContent = '$' + rev.toLocaleString();
+  document.getElementById('totalValue').textContent   = '$' + rev.toLocaleString() + '/mo';
+}
+
+// ── INPUT EVENTS ──
+document.getElementById('msgInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendFromInput();
+});
+document.getElementById('msgInput').addEventListener('input', updateSendBtn);
+document.getElementById('sendBtn').addEventListener('click', () => {
+  const val = document.getElementById('msgInput').value.trim();
+  if (val) sendFromInput();
+  // if empty, mic icon — do nothing
+});
+
+// ── BOOT ──
+initReservations();
+updateROI();
+setTimeout(() => document.getElementById('msgInput').focus(), 200);
+</script>
+</body>
+</html>
