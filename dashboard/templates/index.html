@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Velora - Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>AI Velora</h1>
+            <span class="subtitle">Hotel Palermo Soho - Agent Dashboard</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Metrics Cards -->
+        <section class="metrics" id="metrics">
+            <div class="card">
+                <div class="card-label">Conversaciones Hoy</div>
+                <div class="card-value" id="total-conversations">-</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Resueltas Automaticamente</div>
+                <div class="card-value" id="auto-resolved">-</div>
+                <div class="card-sub" id="auto-resolved-pct"></div>
+            </div>
+            <div class="card">
+                <div class="card-label">Tiempo Promedio Respuesta</div>
+                <div class="card-value" id="avg-response">-</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Intent Mas Comun</div>
+                <div class="card-value" id="top-intent">-</div>
+            </div>
+        </section>
+
+        <!-- Conversations Table -->
+        <section class="conversations-section">
+            <h2>Conversaciones Recientes</h2>
+            <table class="conversations-table" id="conversations-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Huesped</th>
+                        <th>Plataforma</th>
+                        <th>Estado</th>
+                        <th>Mensajes</th>
+                        <th>Ultima Actividad</th>
+                    </tr>
+                </thead>
+                <tbody id="conversations-body">
+                    <tr>
+                        <td colspan="6" class="loading">Cargando conversaciones...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Conversation Detail (hidden by default) -->
+        <section class="conversation-detail" id="conversation-detail" style="display: none;">
+            <div class="detail-header">
+                <button class="btn-back" onclick="closeDetail()">&larr; Volver</button>
+                <h2 id="detail-title">Conversacion</h2>
+                <span class="detail-status" id="detail-status"></span>
+            </div>
+            <div class="chat-container" id="chat-container"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>AI Velora MVP v0.1.0 &mdash; Datos actualizados cada 10 segundos</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
