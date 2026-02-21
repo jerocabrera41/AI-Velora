@@ -5,6 +5,7 @@ import time
 import uuid
 from typing import Any, TypedDict
 
+import anthropic
 from langgraph.graph import END, StateGraph
 from loguru import logger
 
@@ -137,8 +138,6 @@ class HotelAgent:
         logger.info(f"Classifying intent for: '{message[:80]}...'")
 
         try:
-            import anthropic
-
             client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
 
             prompt = INTENT_CLASSIFICATION_PROMPT.format(message=message)
@@ -223,8 +222,6 @@ class HotelAgent:
         start_time = time.time()
 
         try:
-            import anthropic
-
             client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
 
             # Build system prompt with hotel info

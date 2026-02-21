@@ -1,23 +1,11 @@
 """Shared test fixtures."""
 
-import asyncio
-import uuid
-
-import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from src.database.database import Base
-from src.database.seed import get_bookings_data, get_hotel_data, HOTEL_ID
+from src.database.seed import get_bookings_data, get_hotel_data
 from src.database.models import Booking, Hotel
-
-
-@pytest.fixture(scope="session")
-def event_loop():
-    """Use a single event loop for the entire test session."""
-    loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
 
 
 @pytest_asyncio.fixture
