@@ -63,7 +63,7 @@ main {
 /* Metric Cards */
 .metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
 }
@@ -72,7 +72,7 @@ main {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: 1.25rem;
     text-align: center;
     transition: box-shadow 0.2s;
 }
@@ -82,7 +82,7 @@ main {
 }
 
 .card-label {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -90,15 +90,50 @@ main {
 }
 
 .card-value {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: var(--primary);
 }
 
 .card-sub {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     margin-top: 0.25rem;
+}
+
+/* Revenue & Savings card accents */
+.card-revenue .card-value {
+    color: var(--success);
+}
+
+.card-savings .card-value {
+    color: #2563eb;
+}
+
+/* Charts Section */
+.charts-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+}
+
+.chart-card h3 {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.chart-card canvas {
+    max-height: 280px;
 }
 
 /* Conversations Table */
@@ -123,12 +158,12 @@ main {
 .conversations-table th,
 .conversations-table td {
     text-align: left;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 0.75rem;
     border-bottom: 1px solid var(--border);
 }
 
 .conversations-table th {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-muted);
@@ -155,9 +190,10 @@ main {
     display: inline-block;
     padding: 0.2rem 0.6rem;
     border-radius: 12px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .badge-active {
@@ -173,6 +209,42 @@ main {
 .badge-escalated {
     background: #fef3c7;
     color: var(--warning);
+}
+
+/* Outcome badges */
+.badge-venta {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.badge-upsell_exitoso {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.badge-problema_resuelto {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.badge-consulta_resuelta {
+    background: #e0e7ff;
+    color: #4f46e5;
+}
+
+.badge-escalada {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.badge-abandonada {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.badge-en_curso {
+    background: #f1f5f9;
+    color: #64748b;
 }
 
 /* Conversation Detail */
@@ -273,4 +345,21 @@ footer {
 .short-id {
     font-family: monospace;
     font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
+
+    .metrics {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .conversations-table th,
+    .conversations-table td {
+        padding: 0.5rem 0.4rem;
+        font-size: 0.85rem;
+    }
 }

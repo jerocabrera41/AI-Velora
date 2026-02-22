@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Velora - Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <header>
@@ -15,24 +16,54 @@
     </header>
 
     <main>
-        <!-- Metrics Cards -->
+        <!-- KPI Cards -->
         <section class="metrics" id="metrics">
             <div class="card">
                 <div class="card-label">Conversaciones Hoy</div>
                 <div class="card-value" id="total-conversations">-</div>
             </div>
             <div class="card">
-                <div class="card-label">Resueltas Automaticamente</div>
-                <div class="card-value" id="auto-resolved">-</div>
-                <div class="card-sub" id="auto-resolved-pct"></div>
+                <div class="card-label">Resolucion Automatica</div>
+                <div class="card-value" id="auto-resolved-pct-value">-</div>
+                <div class="card-sub" id="auto-resolved-sub"></div>
             </div>
             <div class="card">
                 <div class="card-label">Tiempo Promedio Respuesta</div>
                 <div class="card-value" id="avg-response">-</div>
             </div>
-            <div class="card">
-                <div class="card-label">Intent Mas Comun</div>
-                <div class="card-value" id="top-intent">-</div>
+            <div class="card card-revenue">
+                <div class="card-label">Ingresos Reservas</div>
+                <div class="card-value" id="booking-revenue">-</div>
+            </div>
+            <div class="card card-revenue">
+                <div class="card-label">Ingresos Upsell</div>
+                <div class="card-value" id="upsell-revenue">-</div>
+                <div class="card-sub" id="upsell-rate-sub"></div>
+            </div>
+            <div class="card card-savings">
+                <div class="card-label">Ahorro Estimado</div>
+                <div class="card-value" id="estimated-savings">-</div>
+                <div class="card-sub" id="savings-sub"></div>
+            </div>
+        </section>
+
+        <!-- Charts -->
+        <section class="charts-section" id="charts-section">
+            <div class="chart-card">
+                <h3>Resultado de Conversaciones</h3>
+                <canvas id="outcomes-chart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Conversaciones por Hora</h3>
+                <canvas id="hourly-chart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Intents por Frecuencia</h3>
+                <canvas id="intents-chart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Rendimiento Upsell por Oferta</h3>
+                <canvas id="upsell-chart"></canvas>
             </div>
         </section>
 
@@ -46,13 +77,14 @@
                         <th>Huesped</th>
                         <th>Plataforma</th>
                         <th>Estado</th>
+                        <th>Resultado</th>
                         <th>Mensajes</th>
                         <th>Ultima Actividad</th>
                     </tr>
                 </thead>
                 <tbody id="conversations-body">
                     <tr>
-                        <td colspan="6" class="loading">Cargando conversaciones...</td>
+                        <td colspan="7" class="loading">Cargando conversaciones...</td>
                     </tr>
                 </tbody>
             </table>
