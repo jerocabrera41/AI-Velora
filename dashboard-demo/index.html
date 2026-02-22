@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Velora - Dashboard Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+    /* AI Velora Dashboard Styles */
+
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --success: #16a34a;
+        --warning: #d97706;
+        --danger: #dc2626;
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --text: #1e293b;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --radius: 8px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+        background: var(--primary);
+        color: white;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .demo-badge {
+        background: rgba(255,255,255,0.2);
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-left: auto;
+    }
+
+    /* Main */
+    main {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    /* Metric Cards */
+    .metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        text-align: center;
+        transition: box-shadow 0.2s;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .card-sub {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    /* Revenue & Savings card accents */
+    .card-revenue .card-value {
+        color: var(--success);
+    }
+
+    .card-savings .card-value {
+        color: #2563eb;
+    }
+
+    /* Charts Section */
+    .charts-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+    }
+
+    .chart-card h3 {
+        font-size: 0.9rem;
+        color: var(--text);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .chart-card canvas {
+        max-height: 280px;
+    }
+
+    /* Conversations Table */
+    .conversations-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .conversations-section h2 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .conversations-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .conversations-table th,
+    .conversations-table td {
+        text-align: left;
+        padding: 0.75rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .conversations-table th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        background: var(--bg);
+    }
+
+    .conversations-table tbody tr {
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .conversations-table tbody tr:hover {
+        background: #f1f5f9;
+    }
+
+    .loading {
+        text-align: center;
+        color: var(--text-muted);
+        padding: 2rem;
+    }
+
+    /* Status badges */
+    .badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .badge-active {
+        background: #dcfce7;
+        color: var(--success);
+    }
+
+    .badge-resolved {
+        background: #dbeafe;
+        color: var(--primary);
+    }
+
+    .badge-escalated {
+        background: #fef3c7;
+        color: var(--warning);
+    }
+
+    /* Outcome badges */
+    .badge-venta {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .badge-upsell_exitoso {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .badge-problema_resuelto {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .badge-consulta_resuelta {
+        background: #e0e7ff;
+        color: #4f46e5;
+    }
+
+    .badge-escalada {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .badge-abandonada {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .badge-en_curso {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    /* Conversation Detail */
+    .conversation-detail {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+    }
+
+    .detail-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .btn-back {
+        background: none;
+        border: 1px solid var(--border);
+        padding: 0.4rem 0.8rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: var(--text);
+        transition: background 0.15s;
+    }
+
+    .btn-back:hover {
+        background: var(--bg);
+    }
+
+    .detail-status {
+        margin-left: auto;
+    }
+
+    /* Chat */
+    .chat-container {
+        max-height: 600px;
+        overflow-y: auto;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .chat-message {
+        max-width: 75%;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        line-height: 1.4;
+        font-size: 0.95rem;
+    }
+
+    .chat-message.user {
+        align-self: flex-end;
+        background: var(--primary);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .chat-message.assistant {
+        align-self: flex-start;
+        background: #f1f5f9;
+        color: var(--text);
+        border-bottom-left-radius: 4px;
+    }
+
+    .chat-message.system {
+        align-self: center;
+        background: #fef3c7;
+        color: var(--warning);
+        font-size: 0.85rem;
+        font-style: italic;
+    }
+
+    .chat-meta {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 0.3rem;
+    }
+
+    .chat-message.user .chat-meta {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+
+    /* Short ID */
+    .short-id {
+        font-family: monospace;
+        font-size: 0.85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .charts-section {
+            grid-template-columns: 1fr;
+        }
+
+        .metrics {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        }
+
+        .conversations-table th,
+        .conversations-table td {
+            padding: 0.5rem 0.4rem;
+            font-size: 0.85rem;
+        }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>AI Velora</h1>
+            <span class="subtitle">Hotel Palermo Soho - Agent Dashboard</span>
+            <span class="demo-badge">Demo</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- KPI Cards -->
+        <section class="metrics" id="metrics">
+            <div class="card">
+                <div class="card-label">Conversaciones Hoy</div>
+                <div class="card-value" id="total-conversations">-</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Resolucion Automatica</div>
+                <div class="card-value" id="auto-resolved-pct-value">-</div>
+                <div class="card-sub" id="auto-resolved-sub"></div>
+            </div>
+            <div class="card">
+                <div class="card-label">Tiempo Promedio Respuesta</div>
+                <div class="card-value" id="avg-response">-</div>
+            </div>
+            <div class="card card-revenue">
+                <div class="card-label">Ingresos Reservas</div>
+                <div class="card-value" id="booking-revenue">-</div>
+            </div>
+            <div class="card card-revenue">
+                <div class="card-label">Ingresos Upsell</div>
+                <div class="card-value" id="upsell-revenue">-</div>
+                <div class="card-sub" id="upsell-rate-sub"></div>
+            </div>
+            <div class="card card-savings">
+                <div class="card-label">Ahorro Estimado</div>
+                <div class="card-value" id="estimated-savings">-</div>
+                <div class="card-sub" id="savings-sub"></div>
+            </div>
+        </section>
+
+        <!-- Charts -->
+        <section class="charts-section" id="charts-section">
+            <div class="chart-card">
+                <h3>Resultado de Conversaciones</h3>
+                <canvas id="outcomes-chart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Conversaciones por Hora</h3>
+                <canvas id="hourly-chart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Intents por Frecuencia</h3>
+                <canvas id="intents-chart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Rendimiento Upsell por Oferta</h3>
+                <canvas id="upsell-chart"></canvas>
+            </div>
+        </section>
+
+        <!-- Conversations Table -->
+        <section class="conversations-section">
+            <h2>Conversaciones Recientes</h2>
+            <table class="conversations-table" id="conversations-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Huesped</th>
+                        <th>Plataforma</th>
+                        <th>Estado</th>
+                        <th>Resultado</th>
+                        <th>Mensajes</th>
+                        <th>Ultima Actividad</th>
+                    </tr>
+                </thead>
+                <tbody id="conversations-body">
+                    <tr>
+                        <td colspan="7" class="loading">Cargando conversaciones...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Conversation Detail (hidden by default) -->
+        <section class="conversation-detail" id="conversation-detail" style="display: none;">
+            <div class="detail-header">
+                <button class="btn-back" onclick="closeDetail()">&larr; Volver</button>
+                <h2 id="detail-title">Conversacion</h2>
+                <span class="detail-status" id="detail-status"></span>
+            </div>
+            <div class="chat-container" id="chat-container"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>AI Velora MVP v0.1.0 &mdash; Dashboard Demo con datos simulados</p>
+    </footer>
+
+    <script>
+    // =====================================================================
+    // AI Velora Dashboard - Standalone Demo (datos mock)
+    // =====================================================================
+
+    // --- Mock Data ---
+
+    const MOCK_METRICS = {
+        total_conversations_today: 24,
+        auto_resolved_today: 18,
+        auto_resolved_pct: 75.0,
+        avg_response_time_ms: 1820,
+        upsell_conversion_rate: 33.3,
+        top_intents: [
+            { intent: "greeting", count: 45 },
+            { intent: "booking_info", count: 38 },
+            { intent: "new_booking", count: 24 },
+            { intent: "amenities_query", count: 20 },
+            { intent: "service_request", count: 18 },
+            { intent: "faq_general", count: 15 },
+            { intent: "upselling", count: 12 },
+            { intent: "out_of_scope", count: 5 }
+        ],
+        outcomes: {
+            venta: 6,
+            upsell_exitoso: 4,
+            problema_resuelto: 5,
+            consulta_resuelta: 4,
+            escalada: 1,
+            abandonada: 2,
+            en_curso: 2
+        },
+        financial: {
+            booking_revenue: 3480.0,
+            upsell_revenue: 248.0,
+            estimated_savings: 270.0,
+            total_agent_revenue: 3728.0,
+            cost_per_escalation: 15.0
+        },
+        hourly_distribution: [
+            { hour: 0, count: 0 }, { hour: 1, count: 0 }, { hour: 2, count: 0 },
+            { hour: 3, count: 0 }, { hour: 4, count: 0 }, { hour: 5, count: 0 },
+            { hour: 6, count: 1 }, { hour: 7, count: 1 }, { hour: 8, count: 2 },
+            { hour: 9, count: 3 }, { hour: 10, count: 4 }, { hour: 11, count: 3 },
+            { hour: 12, count: 2 }, { hour: 13, count: 1 }, { hour: 14, count: 3 },
+            { hour: 15, count: 4 }, { hour: 16, count: 3 }, { hour: 17, count: 2 },
+            { hour: 18, count: 2 }, { hour: 19, count: 3 }, { hour: 20, count: 4 },
+            { hour: 21, count: 3 }, { hour: 22, count: 1 }, { hour: 23, count: 0 }
+        ],
+        upsell_by_offer: [
+            { offer_name: "Upgrade a Deluxe", offer_type: "upgrade", offered_count: 8, accepted_count: 3, revenue: 240.0 },
+            { offer_name: "Upgrade a Suite", offer_type: "upgrade", offered_count: 4, accepted_count: 1, revenue: 150.0 },
+            { offer_name: "Desayuno Premium", offer_type: "addon", offered_count: 12, accepted_count: 5, revenue: 90.0 },
+            { offer_name: "Late Checkout", offer_type: "addon", offered_count: 6, accepted_count: 3, revenue: 90.0 },
+            { offer_name: "Spa Relax", offer_type: "addon", offered_count: 5, accepted_count: 2, revenue: 100.0 },
+            { offer_name: "Early Check-in", offer_type: "addon", offered_count: 3, accepted_count: 1, revenue: 20.0 }
+        ]
+    };
+
+    const today = new Date().toISOString().split('T')[0];
+
+    const MOCK_CONVERSATIONS = [
+        { id: "a1b2c3d4-1111-4000-8000-000000000001", guest_phone: "+5491134567890", platform: "telegram", status: "resolved", outcome: "venta", message_count: 12, last_message_at: today + "T20:15:00Z" },
+        { id: "a1b2c3d4-2222-4000-8000-000000000002", guest_phone: "+5491145678901", platform: "telegram", status: "resolved", outcome: "upsell_exitoso", message_count: 8, last_message_at: today + "T19:42:00Z" },
+        { id: "a1b2c3d4-3333-4000-8000-000000000003", guest_phone: "+5491156789012", platform: "whatsapp", status: "resolved", outcome: "problema_resuelto", message_count: 6, last_message_at: today + "T18:30:00Z" },
+        { id: "a1b2c3d4-4444-4000-8000-000000000004", guest_phone: "+5491167890123", platform: "telegram", status: "resolved", outcome: "consulta_resuelta", message_count: 4, last_message_at: today + "T17:55:00Z" },
+        { id: "a1b2c3d4-5555-4000-8000-000000000005", guest_phone: "+5491178901234", platform: "telegram", status: "resolved", outcome: "venta", message_count: 15, last_message_at: today + "T16:20:00Z" },
+        { id: "a1b2c3d4-6666-4000-8000-000000000006", guest_phone: "+5491189012345", platform: "whatsapp", status: "escalated", outcome: "escalada", message_count: 9, last_message_at: today + "T15:10:00Z" },
+        { id: "a1b2c3d4-7777-4000-8000-000000000007", guest_phone: "+5491190123456", platform: "telegram", status: "resolved", outcome: "upsell_exitoso", message_count: 7, last_message_at: today + "T14:05:00Z" },
+        { id: "a1b2c3d4-8888-4000-8000-000000000008", guest_phone: "+5491101234567", platform: "telegram", status: "active", outcome: "en_curso", message_count: 3, last_message_at: today + "T13:40:00Z" },
+        { id: "a1b2c3d4-9999-4000-8000-000000000009", guest_phone: "+5491112345678", platform: "whatsapp", status: "resolved", outcome: "problema_resuelto", message_count: 5, last_message_at: today + "T11:25:00Z" },
+        { id: "a1b2c3d4-aaaa-4000-8000-000000000010", guest_phone: "+5491123456789", platform: "telegram", status: "active", outcome: "abandonada", message_count: 2, last_message_at: (new Date(Date.now() - 26*60*60*1000)).toISOString() }
+    ];
+
+    const MOCK_CONVERSATION_DETAILS = {
+        "a1b2c3d4-1111-4000-8000-000000000001": {
+            id: "a1b2c3d4-1111-4000-8000-000000000001",
+            guest_phone: "+5491134567890",
+            platform: "telegram",
+            status: "resolved",
+            messages: [
+                { id: "m01", role: "user", content: "Hola, buenos dias!", intent: "greeting", metadata: null, created_at: today + "T19:50:00Z" },
+                { id: "m02", role: "assistant", content: "Hola! Bienvenido al Hotel Palermo Soho. Soy Velora, tu asistente virtual. En que puedo ayudarte hoy?", intent: "greeting", metadata: { latency_ms: 1250 }, created_at: today + "T19:50:02Z" },
+                { id: "m03", role: "user", content: "Quiero reservar una habitacion para el proximo fin de semana", intent: "new_booking", metadata: null, created_at: today + "T19:51:00Z" },
+                { id: "m04", role: "assistant", content: "Con gusto te ayudo con tu reserva! Tenemos disponibilidad para el proximo fin de semana. Contamos con 3 tipos de habitacion:\n\n- Standard: $120/noche (hasta 2 huespedes)\n- Deluxe: $200/noche (hasta 3 huespedes)\n- Suite: $350/noche (hasta 4 huespedes)\n\nCuantas noches te gustaria quedarte y cuantos huespedes serian?", intent: "new_booking", metadata: { latency_ms: 2100 }, created_at: today + "T19:51:03Z" },
+                { id: "m05", role: "user", content: "Somos 2 personas, 2 noches. La Deluxe esta disponible?", intent: "new_booking", metadata: null, created_at: today + "T19:52:00Z" },
+                { id: "m06", role: "assistant", content: "Si, tenemos habitaciones Deluxe disponibles para esas fechas. El total seria de $400 por 2 noches. Necesito tu nombre completo y un email o telefono de contacto para confirmar la reserva. Queres proceder?", intent: "new_booking", metadata: { latency_ms: 1800 }, created_at: today + "T19:52:03Z" },
+                { id: "m07", role: "user", content: "Si, mi nombre es Laura Martinez, email laura.martinez@gmail.com", intent: "new_booking", metadata: null, created_at: today + "T19:53:00Z" },
+                { id: "m08", role: "assistant", content: "Perfecto! Tu reserva ha sido confirmada:\n\nConfirmacion: PAL-2025-0047\nHuesped: Laura Martinez\nHabitacion: Deluxe\nCheck-in: Sabado 15:00\nCheck-out: Lunes 11:00\nTotal: $400\n\nTe enviamos los detalles a laura.martinez@gmail.com. Necesitas algo mas?", intent: "new_booking", metadata: { latency_ms: 2400 }, created_at: today + "T19:53:04Z" },
+                { id: "m09", role: "user", content: "Genial, tienen estacionamiento?", intent: "amenities_query", metadata: null, created_at: today + "T19:54:00Z" },
+                { id: "m10", role: "assistant", content: "Si! Contamos con estacionamiento privado disponible para nuestros huespedes sin cargo adicional. Esta ubicado en el subsuelo del hotel con acceso las 24 horas. Algo mas que necesites?", intent: "amenities_query", metadata: { latency_ms: 1500 }, created_at: today + "T19:54:02Z" },
+                { id: "m11", role: "user", content: "No, eso es todo. Gracias!", intent: "greeting", metadata: null, created_at: today + "T20:14:00Z" },
+                { id: "m12", role: "assistant", content: "Excelente! Te esperamos el sabado, Laura. Cualquier consulta antes de tu llegada, no dudes en escribirme. Que tengas un gran dia!", intent: "greeting", metadata: { latency_ms: 1100 }, created_at: today + "T20:15:00Z" }
+            ]
+        },
+        "a1b2c3d4-2222-4000-8000-000000000002": {
+            id: "a1b2c3d4-2222-4000-8000-000000000002",
+            guest_phone: "+5491145678901",
+            platform: "telegram",
+            status: "resolved",
+            messages: [
+                { id: "m20", role: "user", content: "Hola, tengo una reserva a nombre de Juan Perez, confirmacion PAL-2025-0001", intent: "booking_info", metadata: null, created_at: today + "T19:20:00Z" },
+                { id: "m21", role: "assistant", content: "Hola Juan! Ya encontre tu reserva PAL-2025-0001. Veo que tenes una habitacion Deluxe reservada para 2 huespedes. En que puedo ayudarte?", intent: "booking_info", metadata: { latency_ms: 1600 }, created_at: today + "T19:20:02Z" },
+                { id: "m22", role: "user", content: "Quiero saber si puedo hacer upgrade a la suite", intent: "upselling", metadata: null, created_at: today + "T19:21:00Z" },
+                { id: "m23", role: "assistant", content: "Excelente eleccion! Tenemos disponible el upgrade a Suite por solo $150 adicionales por noche. La Suite incluye:\n\n- Sala de estar separada\n- Jacuzzi privado\n- Vista panoramica\n- Hasta 4 huespedes\n\nTe gustaria hacer el upgrade?", intent: "upselling", metadata: { latency_ms: 2000 }, created_at: today + "T19:21:03Z" },
+                { id: "m24", role: "user", content: "Si, quiero el upgrade!", intent: "upselling", metadata: null, created_at: today + "T19:22:00Z" },
+                { id: "m25", role: "assistant", content: "Listo! Tu upgrade a Suite ha sido confirmado. El cargo adicional de $150/noche se agrega a tu reserva. Tu nueva habitacion te va a encantar. Algo mas que necesites?", intent: "upselling", metadata: { latency_ms: 1900 }, created_at: today + "T19:22:03Z" },
+                { id: "m26", role: "user", content: "Tambien me interesa el desayuno premium", intent: "upselling", metadata: null, created_at: today + "T19:23:00Z" },
+                { id: "m27", role: "assistant", content: "El Paquete Desayuno Premium tiene un costo de $18 por persona por dia e incluye buffet completo con opciones gourmet, jugos naturales y cafeteria de especialidad. Lo agrego a tu reserva?", intent: "upselling", metadata: { latency_ms: 1400 }, created_at: today + "T19:23:02Z" },
+                { id: "m28", role: "user", content: "Si, agregalo para los 2", intent: "upselling", metadata: null, created_at: today + "T19:24:00Z" },
+                { id: "m29", role: "assistant", content: "Perfecto! Desayuno Premium agregado para 2 personas. Tu reserva actualizada:\n\n- Suite (upgrade desde Deluxe)\n- Desayuno Premium x2\n\nVas a disfrutar mucho tu estadia! Algo mas?", intent: "upselling", metadata: { latency_ms: 1700 }, created_at: today + "T19:42:00Z" }
+            ]
+        },
+        "a1b2c3d4-3333-4000-8000-000000000003": {
+            id: "a1b2c3d4-3333-4000-8000-000000000003",
+            guest_phone: "+5491156789012",
+            platform: "whatsapp",
+            status: "resolved",
+            messages: [
+                { id: "m30", role: "user", content: "Hola, estoy en la habitacion 305 y no funciona el aire acondicionado", intent: "service_request", metadata: null, created_at: today + "T18:15:00Z" },
+                { id: "m31", role: "assistant", content: "Lamento mucho la molestia! Ya registro tu solicitud de mantenimiento para la habitacion 305 por el aire acondicionado. Nuestro equipo de mantenimiento se va a comunicar contigo en los proximos 15 minutos. Mientras tanto, puedo ofrecerte un ventilador portatil?", intent: "service_request", metadata: { latency_ms: 1300 }, created_at: today + "T18:15:02Z" },
+                { id: "m32", role: "user", content: "Si, mandame el ventilador por favor", intent: "service_request", metadata: null, created_at: today + "T18:16:00Z" },
+                { id: "m33", role: "assistant", content: "Listo! Ya solicite que te lleven un ventilador portatil a la habitacion 305. Deberia llegar en unos 5 minutos. Disculpa las molestias y gracias por tu paciencia.", intent: "service_request", metadata: { latency_ms: 1200 }, created_at: today + "T18:16:02Z" },
+                { id: "m34", role: "user", content: "Ya llego, gracias!", intent: "greeting", metadata: null, created_at: today + "T18:25:00Z" },
+                { id: "m35", role: "assistant", content: "Me alegro! El equipo de mantenimiento va a pasar a revisar el aire acondicionado durante la manana. Si necesitas cualquier otra cosa, escribime sin problema. Que descanses!", intent: "greeting", metadata: { latency_ms: 1100 }, created_at: today + "T18:30:00Z" }
+            ]
+        },
+        "a1b2c3d4-6666-4000-8000-000000000006": {
+            id: "a1b2c3d4-6666-4000-8000-000000000006",
+            guest_phone: "+5491189012345",
+            platform: "whatsapp",
+            status: "escalated",
+            messages: [
+                { id: "m60", role: "user", content: "Necesito hablar con un gerente urgente", intent: "out_of_scope", metadata: null, created_at: today + "T14:50:00Z" },
+                { id: "m61", role: "assistant", content: "Entiendo que necesitas hablar con un gerente. Puedo ayudarte con alguna consulta o prefieres que te derive directamente con nuestro equipo de atencion al huesped?", intent: "out_of_scope", metadata: { latency_ms: 1400 }, created_at: today + "T14:50:02Z" },
+                { id: "m62", role: "user", content: "Tuve un problema con un cobro duplicado en mi tarjeta y necesito resolverlo ahora", intent: "out_of_scope", metadata: null, created_at: today + "T14:51:00Z" },
+                { id: "m63", role: "assistant", content: "Comprendo tu preocupacion por el cobro duplicado. Ese tipo de consultas requiere la atencion directa de nuestro equipo administrativo. Voy a derivarte ahora mismo con un representante que puede revisar y resolver el tema de facturacion.", intent: "out_of_scope", metadata: { latency_ms: 1600 }, created_at: today + "T14:51:03Z" },
+                { id: "m64", role: "system", content: "Conversacion derivada a atencion humana - Motivo: cobro duplicado en tarjeta", intent: null, metadata: null, created_at: today + "T14:51:05Z" }
+            ]
+        }
+    };
+
+    // --- Chart instances ---
+    let outcomesChart = null;
+    let hourlyChart = null;
+    let intentsChart = null;
+    let upsellChart = null;
+
+    // --- Charts ---
+
+    function initCharts() {
+        const outcomesCtx = document.getElementById('outcomes-chart').getContext('2d');
+        outcomesChart = new Chart(outcomesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Venta', 'Upsell Exitoso', 'Problema Resuelto',
+                         'Consulta Resuelta', 'Escalada', 'Abandonada', 'En Curso'],
+                datasets: [{
+                    data: [0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: [
+                        '#16a34a', '#22c55e', '#2563eb',
+                        '#60a5fa', '#d97706', '#dc2626', '#94a3b8'
+                    ],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } }
+                },
+                cutout: '55%',
+            }
+        });
+
+        const hourlyCtx = document.getElementById('hourly-chart').getContext('2d');
+        hourlyChart = new Chart(hourlyCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                datasets: [{
+                    label: 'Conversaciones',
+                    data: new Array(24).fill(0),
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                    x: { ticks: { maxTicksLimit: 12, font: { size: 10 } } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        const intentsCtx = document.getElementById('intents-chart').getContext('2d');
+        intentsChart = new Chart(intentsCtx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Mensajes',
+                    data: [],
+                    backgroundColor: '#2563eb',
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                scales: {
+                    x: { beginAtZero: true, ticks: { stepSize: 1 } },
+                    y: { ticks: { font: { size: 11 } } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        const upsellCtx = document.getElementById('upsell-chart').getContext('2d');
+        upsellChart = new Chart(upsellCtx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Ofrecidos',
+                        data: [],
+                        backgroundColor: '#94a3b8',
+                        borderRadius: 4,
+                    },
+                    {
+                        label: 'Aceptados',
+                        data: [],
+                        backgroundColor: '#16a34a',
+                        borderRadius: 4,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                },
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+            }
+        });
+    }
+
+    function updateCharts(data) {
+        if (data.outcomes && outcomesChart) {
+            const o = data.outcomes;
+            outcomesChart.data.datasets[0].data = [
+                o.venta, o.upsell_exitoso, o.problema_resuelto,
+                o.consulta_resuelta, o.escalada, o.abandonada, o.en_curso
+            ];
+            outcomesChart.update();
+        }
+
+        if (data.hourly_distribution && hourlyChart) {
+            hourlyChart.data.datasets[0].data =
+                data.hourly_distribution.map(h => h.count);
+            hourlyChart.update();
+        }
+
+        if (data.top_intents && intentsChart) {
+            intentsChart.data.labels =
+                data.top_intents.map(i => formatIntent(i.intent));
+            intentsChart.data.datasets[0].data =
+                data.top_intents.map(i => i.count);
+            intentsChart.update();
+        }
+
+        if (data.upsell_by_offer && upsellChart) {
+            upsellChart.data.labels =
+                data.upsell_by_offer.map(u => u.offer_name);
+            upsellChart.data.datasets[0].data =
+                data.upsell_by_offer.map(u => u.offered_count);
+            upsellChart.data.datasets[1].data =
+                data.upsell_by_offer.map(u => u.accepted_count);
+            upsellChart.update();
+        }
+    }
+
+    // --- Render Metrics ---
+
+    function renderMetrics(data) {
+        document.getElementById('total-conversations').textContent = data.total_conversations_today;
+        document.getElementById('auto-resolved-pct-value').textContent = `${data.auto_resolved_pct}%`;
+        document.getElementById('auto-resolved-sub').textContent =
+            `${data.auto_resolved_today} de ${data.total_conversations_today}`;
+        document.getElementById('avg-response').textContent = data.avg_response_time_ms > 0
+            ? `${(data.avg_response_time_ms / 1000).toFixed(1)}s`
+            : 'N/A';
+
+        if (data.financial) {
+            document.getElementById('booking-revenue').textContent =
+                `$${data.financial.booking_revenue.toLocaleString('es-AR')}`;
+            document.getElementById('upsell-revenue').textContent =
+                `$${data.financial.upsell_revenue.toLocaleString('es-AR')}`;
+            document.getElementById('upsell-rate-sub').textContent =
+                `${data.upsell_conversion_rate}% conversion`;
+            document.getElementById('estimated-savings').textContent =
+                `$${data.financial.estimated_savings.toLocaleString('es-AR')}`;
+            document.getElementById('savings-sub').textContent =
+                `a $${data.financial.cost_per_escalation}/interaccion`;
+        }
+
+        updateCharts(data);
+    }
+
+    // --- Render Conversations ---
+
+    function renderConversations(conversations) {
+        const tbody = document.getElementById('conversations-body');
+        tbody.innerHTML = conversations.map(conv => `
+            <tr onclick="openConversation('${conv.id}')">
+                <td><span class="short-id">${conv.id.substring(0, 8)}...</span></td>
+                <td>${escapeHtml(conv.guest_phone)}</td>
+                <td>${conv.platform}</td>
+                <td><span class="badge badge-${conv.status}">${conv.status}</span></td>
+                <td><span class="badge badge-${conv.outcome || 'en_curso'}">${formatOutcome(conv.outcome)}</span></td>
+                <td>${conv.message_count}</td>
+                <td>${formatDate(conv.last_message_at)}</td>
+            </tr>
+        `).join('');
+    }
+
+    // --- Conversation Detail ---
+
+    function openConversation(id) {
+        const data = MOCK_CONVERSATION_DETAILS[id];
+        if (!data) {
+            alert('Detalle no disponible para esta conversacion en el demo.');
+            return;
+        }
+
+        document.querySelector('.conversations-section').style.display = 'none';
+        document.querySelector('.metrics').style.display = 'none';
+        document.getElementById('charts-section').style.display = 'none';
+        const detail = document.getElementById('conversation-detail');
+        detail.style.display = 'block';
+
+        document.getElementById('detail-title').textContent = `Conversacion - ${data.guest_phone}`;
+        document.getElementById('detail-status').innerHTML =
+            `<span class="badge badge-${data.status}">${data.status}</span>`;
+
+        const chat = document.getElementById('chat-container');
+        chat.innerHTML = data.messages.map(msg => `
+            <div class="chat-message ${msg.role}">
+                <div>${escapeHtml(msg.content)}</div>
+                <div class="chat-meta">
+                    ${formatDate(msg.created_at)}
+                    ${msg.intent ? ` &middot; Intent: ${formatIntent(msg.intent)}` : ''}
+                    ${msg.metadata && msg.metadata.latency_ms ? ` &middot; ${msg.metadata.latency_ms}ms` : ''}
+                </div>
+            </div>
+        `).join('');
+
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function closeDetail() {
+        document.getElementById('conversation-detail').style.display = 'none';
+        document.querySelector('.conversations-section').style.display = 'block';
+        document.querySelector('.metrics').style.display = 'grid';
+        document.getElementById('charts-section').style.display = 'grid';
+    }
+
+    // --- Helpers ---
+
+    function formatIntent(intent) {
+        const labels = {
+            'booking_info': 'Reserva',
+            'new_booking': 'Nueva Reserva',
+            'amenities_query': 'Amenities',
+            'service_request': 'Pedido',
+            'faq_general': 'FAQ',
+            'greeting': 'Saludo',
+            'upselling': 'Upselling',
+            'out_of_scope': 'Fuera de alcance',
+            'error': 'Error',
+        };
+        return labels[intent] || intent;
+    }
+
+    function formatOutcome(outcome) {
+        const labels = {
+            'venta': 'Venta',
+            'upsell_exitoso': 'Upsell',
+            'problema_resuelto': 'Problema Resuelto',
+            'consulta_resuelta': 'Consulta Resuelta',
+            'escalada': 'Escalada',
+            'abandonada': 'Abandonada',
+            'en_curso': 'En Curso',
+        };
+        return labels[outcome] || outcome || '-';
+    }
+
+    function formatDate(isoStr) {
+        if (!isoStr) return '-';
+        try {
+            const d = new Date(isoStr);
+            return d.toLocaleString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        } catch {
+            return isoStr;
+        }
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // --- Init ---
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initCharts();
+        renderMetrics(MOCK_METRICS);
+        renderConversations(MOCK_CONVERSATIONS);
+    });
+    </script>
+</body>
+</html>
